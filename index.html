@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 </head>
 <body>
-<title>График погашения MOST</title>
+<title>Графики и допсоглашения MOST</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -23,128 +23,210 @@
   --accent-soft:#DCEEE9;
   --int:#945710;
   --int-soft:#FAF0E0;
-  --danger:#B42318;
+  --def:#7A3E9D;--def-soft:#F1E6F8;--good:#1D7A55;--good-soft:#E0F2EA;--danger:#B42318;
   --danger-soft:#FCEBE9;
   --focus:#1B8A74;
   --shadow:0 1px 2px rgba(20,35,42,.06),0 4px 16px rgba(20,35,42,.05);
   --font:"Onest",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
     color-scheme:dark;
     --bg:#0E1618;--surface:#152124;--surface-2:#1B2A2E;--ink:#E3ECEA;--muted:#93A5A8;--line:#2A3B3F;
     --accent:#45B99F;--accent-ink:#062019;--accent-soft:#173B34;--int:#E3A95E;--int-soft:#3A2A15;
-    --danger:#F28B80;--danger-soft:#3C1E1B;--focus:#5FD0B5;--shadow:0 1px 2px rgba(0,0,0,.3);
-  }
-}
+    --def:#C99BE6;--def-soft:#33213F;--good:#5FC99A;--good-soft:#16322A;--danger:#F28B80;--danger-soft:#3C1E1B;--focus:#5FD0B5;--shadow:0 1px 2px rgba(0,0,0,.3);
+  }}
 :root[data-theme="dark"]{
   color-scheme:dark;
   --bg:#0E1618;--surface:#152124;--surface-2:#1B2A2E;--ink:#E3ECEA;--muted:#93A5A8;--line:#2A3B3F;
   --accent:#45B99F;--accent-ink:#062019;--accent-soft:#173B34;--int:#E3A95E;--int-soft:#3A2A15;
-  --danger:#F28B80;--danger-soft:#3C1E1B;--focus:#5FD0B5;--shadow:0 1px 2px rgba(0,0,0,.3);
+  --def:#C99BE6;--def-soft:#33213F;--good:#5FC99A;--good-soft:#16322A;--danger:#F28B80;--danger-soft:#3C1E1B;--focus:#5FD0B5;--shadow:0 1px 2px rgba(0,0,0,.3);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45}
-.wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
-header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
-.brand{display:flex;flex-direction:column;gap:2px}
-.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
-h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
-.top-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-.btn:hover{border-color:var(--accent);color:var(--accent)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn.primary:hover{filter:brightness(1.08);color:var(--accent-ink)}
-.btn:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
-.panel h2{margin:0;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.field{display:flex;flex-direction:column;gap:6px}
-.field>label,.lbl{font-size:13px;font-weight:500}
-.opt{color:var(--muted);font-weight:400}
-.due{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;font-size:13px;padding:8px 11px;border-radius:8px;background:var(--accent-soft);color:var(--ink)}
-.due b{font-family:var(--mono);font-weight:600;color:var(--accent)}
-.due span{color:var(--muted);font-size:12px}
-.hint{font-size:12px;color:var(--muted)}
-input[type=text],input[type=date],input[type=number]{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%;min-width:0}
-input.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
-input:hover{border-color:var(--muted)}
-input.bad{border-color:var(--danger);background:var(--danger-soft)}
-.row{display:flex;gap:8px;align-items:stretch}
-.row>*{flex:1 1 0;min-width:0}
-.row>.shrink{flex:0 0 auto}
-.seg{display:flex;flex-wrap:wrap;background:var(--surface-2);border-radius:9px;padding:3px;gap:3px}
-.seg label{flex:1 1 auto;position:relative;cursor:pointer}
-.seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-.seg span{display:block;text-align:center;padding:7px 10px;border-radius:7px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
-.seg input:checked+span{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-.seg input:focus-visible+span{outline:2px solid var(--focus);outline-offset:1px}
-.seg.wrap2 span{white-space:normal}
-.sub{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
-details.periods{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
-details.periods>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:600}
-details.periods>summary::-webkit-details-marker{display:none}
-.chev{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--surface-2);transition:transform .2s;flex:0 0 auto}
-details[open] .chev{transform:rotate(180deg)}
-.sum-l{display:flex;flex-direction:column;gap:2px}
-.sum-l small{font-weight:400;color:var(--muted);font-size:12px}
-.periods-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
-.periods-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.ptable-wrap{overflow-x:auto;max-height:420px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}
-table.ptable{border-collapse:collapse;width:100%;min-width:420px}
-.ptable th,.ptable td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
-.ptable th{position:sticky;top:0;background:var(--surface-2);font-size:12px;font-weight:600;color:var(--muted);z-index:1}
-.ptable td.n{color:var(--muted);font-family:var(--mono);width:44px}
-.ptable input[type=date],.ptable input[type=text]{padding:6px 8px;font-size:14px}
-.ptable input.changed{border-color:var(--int);background:var(--int-soft)}
-.ptable input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
-.auto{font-family:var(--mono);font-size:13px;color:var(--muted)}
-.result{display:flex;flex-direction:column;gap:12px}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
-.tile .k{font-size:12px;color:var(--muted)}
-.tile .v{font-family:var(--mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
-.tile.warn{background:var(--danger-soft);border-color:var(--danger)}
-.tile.warn .k,.tile.warn .v{color:var(--danger)}
-.tile.hl{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.tile.hl .k{color:var(--accent-ink);opacity:.85}
-.tile.int .v{color:var(--int)}
-.sched{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
-.sched-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
-.sched-head h2{margin:0;font-size:17px;font-weight:600}
-.cond{font-size:12.5px;color:var(--muted);margin-top:3px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chip{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
-.sched-actions{display:flex;gap:8px;flex-wrap:wrap}
-.table-wrap{overflow-x:auto}
-table.grid{border-collapse:collapse;width:100%;min-width:640px;font-variant-numeric:tabular-nums}
-.grid th{background:var(--surface-2);font-size:12px;font-weight:600;color:var(--muted);text-align:right;padding:10px 14px;white-space:nowrap;border-bottom:1px solid var(--line)}
-.grid th:first-child,.grid td:first-child{text-align:left}
-.grid td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:13.5px;white-space:nowrap}
-.grid td.date{font-family:var(--font);font-weight:500;font-size:14px}
-.grid td.days{color:var(--muted);font-size:12.5px}
-.grid td.pi{color:var(--int)}
-.grid td.tot{font-weight:600}
-.grid td.bal{color:var(--muted)}
-.grid tr.issue td{background:var(--accent-soft)}
-.grid tr.issue td.date small{display:block;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
-.grid tr:hover td{background:var(--surface-2)}
-.grid tr.issue:hover td{background:var(--accent-soft)}
-.grid tfoot td{font-weight:700;background:var(--surface-2);border-bottom:none;border-top:2px solid var(--ink)}
-.grid td.zero{color:var(--line)}
-.tag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:1px 6px;border-radius:999px;background:var(--int-soft);color:var(--int);vertical-align:middle;margin-left:4px}
-.errors{background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger);border-radius:10px;padding:12px 14px;font-weight:500}
-.errors ul{margin:4px 0 0;padding-left:18px}
-.note{font-size:12px;color:var(--muted);padding:10px 16px 14px}
+#tab-grafik .wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+#tab-grafik header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+#tab-grafik .brand{display:flex;flex-direction:column;gap:2px}
+#tab-grafik .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+#tab-grafik h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+#tab-grafik .top-actions{display:flex;gap:8px;flex-wrap:wrap}
+#tab-grafik .btn{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+#tab-grafik .btn:hover{border-color:var(--accent);color:var(--accent)}
+#tab-grafik .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#tab-grafik .btn.primary:hover{filter:brightness(1.08);color:var(--accent-ink)}
+#tab-grafik .btn:focus-visible,#tab-grafik input:focus-visible,#tab-grafik select:focus-visible,#tab-grafik summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+#tab-grafik .panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
+#tab-grafik .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+#tab-grafik .panel h2{margin:0;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+#tab-grafik .field{display:flex;flex-direction:column;gap:6px}
+#tab-grafik .field>label,#tab-grafik .lbl{font-size:13px;font-weight:500}
+#tab-grafik .opt{color:var(--muted);font-weight:400}
+#tab-grafik .due{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;font-size:13px;padding:8px 11px;border-radius:8px;background:var(--accent-soft);color:var(--ink)}
+#tab-grafik .due b{font-family:var(--mono);font-weight:600;color:var(--accent)}
+#tab-grafik .due span{color:var(--muted);font-size:12px}
+#tab-grafik .hint{font-size:12px;color:var(--muted)}
+#tab-grafik input[type=text],#tab-grafik input[type=date],#tab-grafik input[type=number]{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%;min-width:0}
+#tab-grafik input.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+#tab-grafik input:hover{border-color:var(--muted)}
+#tab-grafik input.bad{border-color:var(--danger);background:var(--danger-soft)}
+#tab-grafik .row{display:flex;gap:8px;align-items:stretch}
+#tab-grafik .row>*{flex:1 1 0;min-width:0}
+#tab-grafik .row>.shrink{flex:0 0 auto}
+#tab-grafik .seg{display:flex;flex-wrap:wrap;background:var(--surface-2);border-radius:9px;padding:3px;gap:3px}
+#tab-grafik .seg label{flex:1 1 auto;position:relative;cursor:pointer}
+#tab-grafik .seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+#tab-grafik .seg span{display:block;text-align:center;padding:7px 10px;border-radius:7px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
+#tab-grafik .seg input:checked+span{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+#tab-grafik .seg input:focus-visible+span{outline:2px solid var(--focus);outline-offset:1px}
+#tab-grafik .seg.wrap2 span{white-space:normal}
+#tab-grafik .sub{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
+#tab-grafik details.periods{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+#tab-grafik details.periods>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:600}
+#tab-grafik details.periods>summary::-webkit-details-marker{display:none}
+#tab-grafik .chev{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--surface-2);transition:transform .2s;flex:0 0 auto}
+#tab-grafik details[open] .chev{transform:rotate(180deg)}
+#tab-grafik .sum-l{display:flex;flex-direction:column;gap:2px}
+#tab-grafik .sum-l small{font-weight:400;color:var(--muted);font-size:12px}
+#tab-grafik .periods-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+#tab-grafik .periods-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+#tab-grafik .ptable-wrap{overflow-x:auto;max-height:420px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}
+#tab-grafik table.ptable{border-collapse:collapse;width:100%;min-width:420px}
+#tab-grafik .ptable th,#tab-grafik .ptable td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+#tab-grafik .ptable th{position:sticky;top:0;background:var(--surface-2);font-size:12px;font-weight:600;color:var(--muted);z-index:1}
+#tab-grafik .ptable td.n{color:var(--muted);font-family:var(--mono);width:44px}
+#tab-grafik .ptable input[type=date],#tab-grafik .ptable input[type=text]{padding:6px 8px;font-size:14px}
+#tab-grafik .ptable input.changed{border-color:var(--int);background:var(--int-soft)}
+#tab-grafik .ptable input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
+#tab-grafik .auto{font-family:var(--mono);font-size:13px;color:var(--muted)}
+#tab-grafik .result{display:flex;flex-direction:column;gap:12px}
+#tab-grafik .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+#tab-grafik .tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+#tab-grafik .tile .k{font-size:12px;color:var(--muted)}
+#tab-grafik .tile .v{font-family:var(--mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+#tab-grafik .tile.warn{background:var(--danger-soft);border-color:var(--danger)}
+#tab-grafik .tile.warn .k,#tab-grafik .tile.warn .v{color:var(--danger)}
+#tab-grafik .tile.hl{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#tab-grafik .tile.hl .k{color:var(--accent-ink);opacity:.85}
+#tab-grafik .tile.int .v{color:var(--int)}
+#tab-grafik .sched{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+#tab-grafik .sched-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+#tab-grafik .sched-head h2{margin:0;font-size:17px;font-weight:600}
+#tab-grafik .cond{font-size:12.5px;color:var(--muted);margin-top:3px}
+#tab-grafik .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+#tab-grafik .chip{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
+#tab-grafik .sched-actions{display:flex;gap:8px;flex-wrap:wrap}
+#tab-grafik .table-wrap{overflow-x:auto}
+#tab-grafik table.grid{border-collapse:collapse;width:100%;min-width:640px;font-variant-numeric:tabular-nums}
+#tab-grafik .grid th{background:var(--surface-2);font-size:12px;font-weight:600;color:var(--muted);text-align:right;padding:10px 14px;white-space:nowrap;border-bottom:1px solid var(--line)}
+#tab-grafik .grid th:first-child,#tab-grafik .grid td:first-child{text-align:left}
+#tab-grafik .grid td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:13.5px;white-space:nowrap}
+#tab-grafik .grid td.date{font-family:var(--font);font-weight:500;font-size:14px}
+#tab-grafik .grid td.days{color:var(--muted);font-size:12.5px}
+#tab-grafik .grid td.pi{color:var(--int)}
+#tab-grafik .grid td.tot{font-weight:600}
+#tab-grafik .grid td.bal{color:var(--muted)}
+#tab-grafik .grid tr.issue td{background:var(--accent-soft)}
+#tab-grafik .grid tr.issue td.date small{display:block;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+#tab-grafik .grid tr:hover td{background:var(--surface-2)}
+#tab-grafik .grid tr.issue:hover td{background:var(--accent-soft)}
+#tab-grafik .grid tfoot td{font-weight:700;background:var(--surface-2);border-bottom:none;border-top:2px solid var(--ink)}
+#tab-grafik .grid td.zero{color:var(--line)}
+#tab-grafik .tag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:1px 6px;border-radius:999px;background:var(--int-soft);color:var(--int);vertical-align:middle;margin-left:4px}
+#tab-grafik .errors{background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger);border-radius:10px;padding:12px 14px;font-weight:500}
+#tab-grafik .errors ul{margin:4px 0 0;padding-left:18px}
+#tab-grafik .note{font-size:12px;color:var(--muted);padding:10px 16px 14px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:9px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100% - 32px);z-index:10}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media (max-width:520px){h1{font-size:22px}.tile .v{font-size:17px}}
+@media (max-width:520px){#tab-grafik h1{font-size:22px}
+#tab-grafik .tile .v{font-size:17px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-</style>
+#tab-dop .wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:18px 48px;display:flex;flex-direction:column;gap:14px}
+#tab-dop header.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+#tab-dop h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+#tab-dop .eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+#tab-dop .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+#tab-dop .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line)}
+#tab-dop .card-head h2{margin:0;font-size:15px;font-weight:600}
+#tab-dop .card-body{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+#tab-dop .chips{display:flex;flex-wrap:wrap;gap:6px}
+#tab-dop .chip{font-size:12.5px;padding:4px 10px;border-radius:999px;background:var(--surface-2)}
+#tab-dop .chip b{font-family:var(--mono);font-weight:600}
+#tab-dop .chip.ex{background:var(--int-soft);color:var(--int);font-weight:600}
+#tab-dop .chip.ok{background:var(--good-soft);color:var(--good);font-weight:600}
+#tab-dop .form{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px 12px}
+#tab-dop .f{display:flex;flex-direction:column;gap:4px;min-width:0}
+#tab-dop .f label,#tab-dop .f .lbl{font-size:12px;font-weight:500;color:var(--muted);display:flex;justify-content:space-between;gap:6px}
+#tab-dop input[type=text],#tab-dop input[type=date],#tab-dop input[type=number],#tab-dop select{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:7px 9px;width:100%;min-width:0}
+#tab-dop input.mono,#tab-dop .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+#tab-dop input.auto{border-style:dashed}
+#tab-dop input.manual{border-color:var(--int);background:var(--int-soft)}
+#tab-dop input:hover,#tab-dop select:hover{border-color:var(--muted)}
+#tab-dop .btn{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 13px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+#tab-dop .btn:hover{border-color:var(--accent);color:var(--accent)}
+#tab-dop .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#tab-dop .btn.primary:hover{filter:brightness(1.08);color:var(--accent-ink)}
+#tab-dop .btn.small{padding:3px 9px;font-size:12px}
+#tab-dop .btn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+#tab-dop .vx{border:none;background:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 2px}
+#tab-dop .btn:focus-visible,#tab-dop input:focus-visible,#tab-dop select:focus-visible,#tab-dop summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+#tab-dop .reset{font:inherit;font-size:11px;border:none;background:none;color:var(--accent);cursor:pointer;padding:0}
+#tab-dop .row2{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:14px;align-items:start}
+@media (max-width:1100px){#tab-dop .row2{grid-template-columns:1fr}}
+#tab-dop .tw{overflow:auto;border:1px solid var(--line);border-radius:9px;max-height:460px}
+#tab-dop table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+#tab-dop th{position:sticky;top:0;background:var(--surface-2);font-size:11.5px;font-weight:600;color:var(--muted);text-align:right;padding:7px 9px;white-space:nowrap;border-bottom:1px solid var(--line);z-index:1}
+#tab-dop td{padding:5px 9px;text-align:right;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+#tab-dop th.l,#tab-dop td.l{text-align:left}
+#tab-dop th.c,#tab-dop td.c{text-align:center}
+#tab-dop td.date{font-family:var(--font);font-weight:500;font-size:13px}
+#tab-dop td.pi{color:var(--int)}
+#tab-dop td.df{color:var(--def)}
+#tab-dop td.tot{font-weight:600}
+#tab-dop td.bal{color:var(--muted)}
+#tab-dop td.zero{color:var(--line)}
+#tab-dop tr.done td{background:var(--good-soft)}
+#tab-dop tr.over td{background:var(--danger-soft)}
+#tab-dop tr.issue td{background:var(--accent-soft)}
+#tab-dop tr.off td.date{color:var(--def)}
+#tab-dop tfoot td{font-weight:700;background:var(--surface-2);border-bottom:none;border-top:2px solid var(--ink)}
+#tab-dop td input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;vertical-align:middle}
+#tab-dop td input[type=text]{padding:3px 7px;font-size:12.5px;width:92px;text-align:right;font-family:var(--mono)}
+#tab-dop .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+#tab-dop .tile{border:1px solid var(--line);border-radius:9px;padding:9px 11px;display:flex;flex-direction:column;gap:2px}
+#tab-dop .tile .k{font-size:11.5px;color:var(--muted)}
+#tab-dop .tile .v{font-family:var(--mono);font-size:16px;font-weight:600}
+#tab-dop .tile .s{font-size:11px;color:var(--muted);font-family:var(--mono)}
+#tab-dop .tile.warn{background:var(--danger-soft);border-color:var(--danger)}
+#tab-dop .tile.warn .k,#tab-dop .tile.warn .v{color:var(--danger)}
+#tab-dop .tile.hl{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+#tab-dop .tile.hl .k,#tab-dop .tile.hl .s{color:var(--accent-ink);opacity:.85}
+#tab-dop .errors{background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger);border-radius:9px;padding:10px 12px;font-weight:500}
+#tab-dop .errors ul{margin:4px 0 0;padding-left:18px}
+#tab-dop .hint{font-size:11.5px;color:var(--muted)}
+#tab-dop .drop.over{outline:2px dashed var(--accent);outline-offset:4px}
+#tab-dop .qa{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+#tab-dop .modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px}
+#tab-dop .seg{display:flex;flex-wrap:wrap;background:var(--surface-2);border-radius:9px;padding:3px;gap:3px}
+#tab-dop .seg label{flex:1 1 auto;position:relative;cursor:pointer}
+#tab-dop .seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+#tab-dop .seg span{display:block;text-align:center;padding:7px 10px;border-radius:7px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap}
+#tab-dop .seg input:checked+span{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+#tab-dop .seg input:focus-visible+span{outline:2px solid var(--focus);outline-offset:1px}
 
-<div class="wrap">
+.apptabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.apptabs-in{max-width:1280px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.apptabs b{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-block:12px}
+.apptabs nav{display:flex;gap:4px}
+.apptabs button{font:inherit;font-size:14px;font-weight:600;border:none;background:none;color:var(--muted);padding:12px 14px;cursor:pointer;border-bottom:3px solid transparent}
+.apptabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.apptabs button:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
+</style>
+<div class="apptabs"><div class="apptabs-in"><b>МФО MOST</b><nav role="tablist" aria-label="Разделы">
+<button type="button" role="tab" id="t-grafik" aria-controls="tab-grafik" aria-selected="true">График погашения</button>
+<button type="button" role="tab" id="t-dop" aria-controls="tab-dop" aria-selected="false">Допсоглашения</button>
+</nav></div></div>
+<div id="tab-grafik"><div class="wrap">
   <header class="top">
     <div class="brand">
       <span class="eyebrow">МФО MOST · бизнес-блок</span>
@@ -304,9 +386,103 @@ table.grid{border-collapse:collapse;width:100%;min-width:640px;font-variant-nume
       <p class="note">Расчёт носит информационный характер. ГЭСВ считается как в ИБСО на дату начала договора: платежи дисконтируются по фактическим дням от выдачи, делённым на базу (360 или 365), без учёта комиссий. <span id="roundNote"></span></p>
     </div>
   </section>
-</div>
-<div class="toast" id="toast" role="status"></div>
+</div></div>
+<div id="tab-dop" hidden><div class="wrap drop" id="drop">
+  <header class="top">
+    <div><span class="eyebrow">МФО MOST · отсрочка / реструктуризация</span><h1>Допсоглашения</h1></div>
+    <div class="qa">
+      <label class="btn primary" for="fileIn">Загрузить график из ИБСО</label>
+      <input type="file" id="fileIn" accept=".xlsx,.xls,.csv" hidden>
+    </div>
+  </header>
 
+  <section class="card">
+    <div class="card-head">
+      <h2>Текущий график (из ИБСО)</h2>
+      <div class="chips" id="dChips"></div>
+    </div>
+    <div class="card-body">
+      <div class="form">
+        <div class="f"><label for="cIssue">Дата выдачи</label><input type="date" id="cIssue"></div>
+        <div class="f"><label for="cAmount">Сумма выдачи, ₸</label><input type="text" id="cAmount" class="mono" inputmode="decimal"></div>
+        <div class="f"><label for="cRate">Ставка, % годовых <span id="rateTag"></span></label><input type="text" id="cRate" class="mono" inputmode="decimal"></div>
+        <div class="f"><label for="cBasis">База расчёта</label><select id="cBasis"><option value="act360">факт/360</option><option value="act365">факт/365</option><option value="30360">30/360</option></select></div>
+        <div class="f"><label for="cDay">День гашения</label><input type="number" id="cDay" class="mono" min="1" max="31"></div>
+      </div>
+      <div class="tw" style="max-height:300px"><table id="oldTable"></table></div>
+      <span class="hint">Галочка = платёж исполнен. Снимите, если клиент не оплатил: сумма уйдёт в просрочку.</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Допсоглашение</h2><div class="qa" id="varBar"></div></div>
+    <div class="card-body">
+      <span class="hint">ОД (срочный и просроченный) всегда капитализируется в новый график. «+ Вариант» копирует текущие условия — меняйте и сравнивайте, в Excel выгружаются все варианты.</span>
+      <div class="form">
+        <div class="f"><label for="dsDate">Дата ДС</label><input type="date" id="dsDate"></div>
+        <div class="f"><label for="dsNum">№ ДС <span>необяз.</span></label><input type="text" id="dsNum"></div>
+        <div class="f"><label for="nFinish">План. финиш</label><input type="date" id="nFinish"></div>
+        <div class="f"><label for="nRate">Новая ставка, % год.</label><input type="text" id="nRate" class="mono" inputmode="decimal"></div>
+      </div>
+      <div class="form" id="balForm"></div>
+      <div class="form">
+        <div class="f"><label for="tPrc">Что делать с процентами на дату ДС</label><select id="tPrc"><option value="defer">В отложенные %</option><option value="first">Оплатить первым платежом</option><option value="cap">Капитализировать в ОД</option><option value="waive">Простить</option></select></div>
+        <div class="f"><label for="tPen">Что делать с пеней</label><select id="tPen"><option value="waive">Простить</option><option value="defer">В отложенные</option><option value="first">Оплатить первым платежом</option></select></div>
+      </div>
+      <div class="modes">
+        <div class="f">
+          <span class="lbl" id="l-od">Гашение ОД</span>
+          <div class="seg" role="radiogroup" aria-labelledby="l-od">
+            <label><input type="radio" name="odMode" value="ann"><span>Аннуитет</span></label>
+            <label><input type="radio" name="odMode" value="equal"><span>Равными долями</span></label>
+            <label><input type="radio" name="odMode" value="end"><span>В конце срока</span></label>
+            <label><input type="radio" name="odMode" value="manual"><span>Выборочно</span></label>
+          </div>
+          <div class="qa" id="graceBox"><label for="gN" class="hint">Отсрочка ОД, первых месяцев:</label><input type="number" id="gN" class="mono" min="0" value="0" style="width:64px"></div>
+          <span class="hint" id="odHint"></span>
+        </div>
+        <div class="f">
+          <span class="lbl" id="l-pr">Гашение процентов</span>
+          <div class="seg" role="radiogroup" aria-labelledby="l-pr">
+            <label><input type="radio" name="prcMode" value="monthly"><span>Ежемесячно</span></label>
+            <label><input type="radio" name="prcMode" value="end"><span>В конце срока</span></label>
+            <label><input type="radio" name="prcMode" value="sel"><span>В выбранные месяцы</span></label>
+          </div>
+          <span class="hint" id="prHint"></span>
+        </div>
+        <div class="f">
+          <span class="lbl" id="l-df">Гашение отложенных</span>
+          <div class="seg" role="radiogroup" aria-labelledby="l-df">
+            <label><input type="radio" name="tDist" value="equal"><span>Вместе с %</span></label>
+            <label><input type="radio" name="tDist" value="every"><span>Равными долями</span></label>
+            <label><input type="radio" name="tDist" value="sel"><span>В выбранные месяцы</span></label>
+            <label><input type="radio" name="tDist" value="manual"><span>Выборочно</span></label>
+            <label><input type="radio" name="tDist" value="last"><span>В конце срока</span></label>
+          </div>
+          <span class="hint" id="dfHint"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Новый график</h2>
+      <div class="qa">
+        <button type="button" class="btn" id="btnDates" hidden>Вернуть даты</button>
+        <button type="button" class="btn primary" id="dBtnXlsx">Скачать Excel (все варианты)</button>
+        <button type="button" class="btn" id="dBtnCopy">Копировать график</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="errors" id="dErrors" hidden></div>
+      <div class="tiles" id="dTiles"></div>
+      <div class="tw" style="max-height:none"><table id="newTable"></table></div>
+      <span class="hint" id="note"></span>
+    </div>
+  </section>
+</div></div>
+<div class="toast" id="toast" role="status"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 (function(){
@@ -1003,6 +1179,665 @@ function fallbackCopy(text){
 S = freshState();
 writeForm();
 update();
+})();
+</script>
+<script>
+(function(){
+"use strict";
+var DAY = 86400000;
+var $ = function(id){ return document.getElementById(id); };
+
+/* ================= даты ================= */
+function todayISO(){ var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function parseDate(s){
+  if(!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+  var p = s.split("-").map(Number), ms = Date.UTC(p[0], p[1]-1, p[2]);
+  return new Date(ms).getUTCDate() === p[2] ? ms : null;
+}
+function iso(ms){ return new Date(ms).toISOString().slice(0,10); }
+function ymd(ms){ var d = new Date(ms); return [d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()]; }
+function dim(y,m){ return new Date(Date.UTC(y, m+1, 0)).getUTCDate(); }
+function addMonths(ms, k, day){ var a = ymd(ms), t = a[1] + k, yy = a[0] + Math.floor(t/12), mm = ((t%12)+12)%12; return Date.UTC(yy, mm, Math.min(day, dim(yy, mm))); }
+function daysAct(a,b){ return Math.round((b - a) / DAY); }
+function days30(a,b){ var x = ymd(a), y = ymd(b); return 360*(y[0]-x[0]) + 30*(y[1]-x[1]) + (Math.min(y[2],30) - Math.min(x[2],30)); }
+function fmtDate(ms){ var a = ymd(ms); return String(a[2]).padStart(2,"0") + "." + String(a[1]+1).padStart(2,"0") + "." + a[0]; }
+/* дата из текста ИБСО/Excel: 07.09.2026, 07/09/26, 2026-09-07, объект Date, число Excel */
+function anyDate(v){
+  if(v === null || v === undefined || v === "") return null;
+  if(v instanceof Date && !isNaN(v)) return Date.UTC(v.getFullYear(), v.getMonth(), v.getDate());
+  if(typeof v === "number" && v > 20000 && v < 80000) return Date.UTC(1899, 11, 30) + Math.round(v) * DAY;
+  var s = String(v).trim(), m;
+  if((m = s.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})/))){
+    var y = Number(m[3]); if(y < 100) y += 2000;
+    var ms = Date.UTC(y, Number(m[2]) - 1, Number(m[1]));
+    return new Date(ms).getUTCDate() === Number(m[1]) ? ms : null;
+  }
+  if((m = s.match(/^(\d{4})-(\d{2})-(\d{2})/))) return parseDate(m[0]);
+  return null;
+}
+
+/* ================= числа ================= */
+function parseNum(s){
+  if(s === null || s === undefined) return NaN;
+  if(typeof s === "number") return s;
+  var t = String(s).replace(/[\s  ₸]/g, "");
+  if(t === "" || t === "-" ) return NaN;
+  var lc = t.lastIndexOf(","), ld = t.lastIndexOf(".");
+  if(lc > -1 && ld > -1){ if(lc > ld) t = t.replace(/\./g, "").replace(",", "."); else t = t.replace(/,/g, ""); }
+  else if(lc > -1) t = t.replace(",", ".");
+  return Number(t);
+}
+function r2(x){ return Math.round((x + (x >= 0 ? 1e-9 : -1e-9)) * 100) / 100; }
+function fmt(x){ return (Math.abs(x) < 0.005 ? 0 : x).toLocaleString("ru-RU", {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtIn(x){ return isFinite(x) ? x.toLocaleString("ru-RU", {minimumFractionDigits:0, maximumFractionDigits:2}).replace(/ | /g, " ") : ""; }
+function fmtRate(x){ return isFinite(x) ? x.toLocaleString("ru-RU", {minimumFractionDigits:0, maximumFractionDigits:6}).replace(/ | /g, " ") : ""; }
+function plural(n, a, b, c){ var x = Math.abs(n) % 100, y = x % 10; if(x > 10 && x < 20) return c; if(y > 1 && y < 5) return b; if(y === 1) return a; return c; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+
+
+/* ================= разбор загруженного графика ================= */
+function norm(s){ return String(s || "").toLowerCase().replace(/\s+/g, " ").trim(); }
+/* формат ИБСО по операциям: каждая строка — «Выдача кредита», «Гашение ОД» или «Гашение ПРЦ» */
+function parseOperList(body, cDate, cOper, cSum, cDone){
+  var info = {issue:null, amount:NaN, rows:[]}, map = {};
+  body.forEach(function(r){
+    r = r || [];
+    var d = anyDate(r[cDate]); if(d === null) return;
+    var op = norm(r[cOper]), v = parseNum(r[cSum]), done = cDone > -1 ? parseNum(r[cDone]) : NaN;
+    if(!isFinite(v)) return;
+    if(/выдач/.test(op)){ info.issue = d; info.amount = v; return; }
+    var key = iso(d); map[key] = map[key] || {date:key, od:0, prc:0, due:0, done:0};
+    if(/од|основн|кредит/.test(op) && !/прц|процент/.test(op)) map[key].od = r2(map[key].od + v);
+    else if(/прц|процент/.test(op)) map[key].prc = r2(map[key].prc + v);
+    else return;
+    map[key].due = r2(map[key].due + v); if(isFinite(done)) map[key].done = r2(map[key].done + done);
+  });
+  /* есть колонка «Исполненная сумма»: неисполненные платежи сразу отмечаем как неоплаченные */
+  Object.keys(map).sort().forEach(function(k){ var m = map[k]; info.rows.push({date:m.date, od:m.od, prc:m.prc, paid: cDone > -1 ? (m.done >= m.due - 0.005 ? null : false) : null}); });
+  if(!info.rows.length) throw new Error("Не нашлось строк «Гашение ОД / ПРЦ» с датами и суммами.");
+  return info;
+}
+function parseTable(aoa){
+  /* ищем строку заголовков: в ней есть «дата» */
+  var hi = -1;
+  for(var i = 0; i < Math.min(aoa.length, 40); i++){
+    var rowN = (aoa[i] || []).map(norm);
+    if(rowN.some(function(c){ return /^дата/.test(c); }) && rowN.some(function(c){ return /кредит|погашение од|^од$|процент|операци|прц/.test(c); })){ hi = i; break; }
+  }
+  if(hi === -1){
+    /* выгрузка ИБСО без заголовков: Дата | Операция | Сумма | Исполненная сумма | Не исполнено | Выполнено | Начало | Окончание ... */
+    for(var q = 0; q < aoa.length; q++){
+      var rq = aoa[q] || [], co = -1;
+      for(var j0 = 0; j0 < rq.length; j0++){ if(/^(гашение|выдача)/.test(norm(rq[j0]))){ co = j0; break; } }
+      if(co > -1){
+        var cd = -1; for(var j1 = 0; j1 < co; j1++){ if(anyDate(rq[j1]) !== null){ cd = j1; break; } }
+        if(cd < 0) break;
+        return parseOperList(aoa, cd, co, co + 1, co + 2);
+      }
+    }
+    throw new Error("Не нашла ни строку заголовков со словом «Дата», ни строки с операциями «Гашение ОД / ПРЦ».");
+  }
+  var H = aoa[hi].map(norm);
+  var col = function(re, not){ for(var j = 0; j < H.length; j++){ if(re.test(H[j]) && !(not && not.test(H[j]))) return j; } return -1; };
+  var cDate = col(/^дата$|^дата погаш|^дата платеж/); if(cDate < 0) cDate = col(/^дата/);
+  var cOper = col(/операци/);
+  var info = {issue:null, amount:NaN, rows:[]};
+  var body = aoa.slice(hi + 1);
+
+  if(cOper > -1) return parseOperList(body, cDate, cOper, col(/^сумма$|^сумма /, /исполн/), col(/исполн/));
+
+  /* формат «Погашения кредита и процентов» ИБСО или Excel приложения графиков */
+  var cOD = col(/^кредит$|погашение од|^од$|основн|^гашение од/, /\+/);
+  var cPrc = col(/^проценты$|погашение %|^%$|^прц|гашение прц|процент/, /\+|од/);
+  var cDoneR = col(/исполн/);
+  var cTot = col(/кредит \+ проценты|сумма платеж|итого|общая/);
+  if(cOD < 0 || cPrc < 0) throw new Error("Не нашла колонки ОД («Кредит» / «Погашение ОД») и процентов.");
+  body.forEach(function(r){
+    var raw = r[cDate], d = anyDate(raw);
+    if(d === null) return;
+    var txt = norm(raw);
+    if(/выдач/.test(txt)){ info.issue = d; return; }
+    var od = parseNum(r[cOD]), pr = parseNum(r[cPrc]);
+    if(!isFinite(od) && !isFinite(pr)) return;
+    od = isFinite(od) ? r2(od) : 0; pr = isFinite(pr) ? r2(pr) : 0;
+    var paid = null;
+    if(cDoneR > -1){
+      var dn = parseNum(r[cDoneR]), due = cTot > -1 && isFinite(parseNum(r[cTot])) ? parseNum(r[cTot]) : od + pr;
+      paid = isFinite(dn) && dn >= due - 0.005 ? null : false;
+    }
+    info.rows.push({date:iso(d), od:od, prc:pr, paid:paid});
+  });
+  if(!info.rows.length) throw new Error("В таблице не нашлось строк с датами и суммами.");
+  return info;
+}
+
+
+/* ================= состояние ================= */
+var S, lastRes = null, autoB = {};
+function freshState(){
+  return {issue:"", amount:NaN, rate:37.9, rateAuto:false, basis:"act360", payDay:5, rows:[], source:"example",
+    dsDate:todayISO(), dsNum:"", nFinish:"", finTouched:false, nRate:NaN, nRateTouched:false, odMode:"ann", prcMode:"monthly", gN:0,
+    bal:{}, tPrc:"defer", tPen:"waive", tDist:"equal",
+    prcSel:{}, odAmt:{}, fixSum:{}, defSel:{}, defAmt:{}, dateOv:{}, key:"", variants:[], cur:0};
+}
+var GESV_MAX = 46; /* предельное значение ГЭСВ, % — выше подсвечивается красным */
+function RI(x){ return Math.ceil(x - 1e-7); }
+function RP(x){ return Math.round(x); }
+function FL(x){ return Math.floor(x + 1e-9); }
+function denOf(b){ return b === "act365" ? 365 : 360; }
+function daysBy(b, a, c){ return b === "30360" ? days30(a, c) : daysAct(a, c); }
+
+/* пример — рассчитан тем же движком, что и приложение графиков */
+function buildExample(){
+  var D0 = Date.UTC(2026, 5, 8), P = 4000000, annual = 0.379, n = 6, im = annual / 12;
+  var A = Math.round(P * im / (1 - Math.pow(1 + im, -n))), B = P, prev = D0;
+  S.rows = [];
+  for(var k = 1; k <= n; k++){
+    var d = addMonths(D0, k, 8), I = RI(B * annual * daysAct(prev, d) / 360), p = k === n ? B : A - I;
+    S.rows.push({date:iso(d), od:p, prc:I, paid:k <= 2 ? null : false});
+    B -= p; prev = d;
+  }
+  S.issue = iso(D0); S.amount = P; S.payDay = 8; S.source = "example"; S.dsDate = "2026-09-10";
+}
+
+/* ставка и база по процентам графика: подбираем значение, при котором все суммы % совпадают */
+function inferRate(){
+  var D0 = parseDate(S.issue); if(D0 === null || !S.rows.length) return null;
+  var tries = ["act360", "act365", "30360"];
+  for(var t = 0; t < tries.length; t++){
+    var b = tries[t], den = denOf(b), prev = D0, bal = S.amount, samples = [];
+    S.rows.forEach(function(r){
+      var d = parseDate(r.date); if(d === null) return;
+      var dd = daysBy(b, prev, d);
+      if(r.prc > 0 && dd > 0) samples.push({B:bal, d:dd, p:r.prc});
+      bal = r2(bal - r.od); prev = d;
+    });
+    if(!samples.length) return null;
+    var s0 = samples[0], est = s0.p * den / (s0.B * s0.d) * 100;
+    var cands = [Math.round(est * 100) / 100, Math.round(est * 1000) / 1000, Math.round(est * 10) / 10];
+    for(var c = 0; c < cands.length; c++){
+      var r = cands[c] / 100;
+      var ok = samples.every(function(x){ var v = RI(x.B * r * x.d / den); return Math.abs(v - x.p) <= 1; });
+      if(ok) return {rate:cands[c], basis:b};
+    }
+  }
+  return null;
+}
+
+function applyParsed(info){
+  S.rows = info.rows.sort(function(a,b){ return a.date < b.date ? -1 : 1; });
+  if(info.issue !== null) S.issue = iso(info.issue);
+  S.amount = isFinite(info.amount) ? info.amount : S.rows.reduce(function(a,r){ return r2(a + r.od); }, 0);
+  if(info.issue === null && S.rows.length){ var f = parseDate(S.rows[0].date); S.issue = iso(addMonths(f, -1, ymd(f)[2])); }
+  var dayCount = {}; S.rows.forEach(function(r){ var d = ymd(parseDate(r.date))[2]; dayCount[d] = (dayCount[d] || 0) + 1; });
+  S.payDay = Number(Object.keys(dayCount).sort(function(a,b){ return dayCount[b] - dayCount[a]; })[0]) || S.payDay;
+  /* метод как в загруженном графике: одинаковые суммы ОД — «равными долями», иначе аннуитет */
+  var ods = S.rows.filter(function(r){ return r.od > 0; }).map(function(r){ return r.od; }).slice(0, -1);
+  S.odMode = ods.length > 1 && Math.max.apply(null, ods) - Math.min.apply(null, ods) <= 1 ? "equal" : "ann";
+  var inf = inferRate();
+  if(inf){ S.rate = inf.rate; S.basis = inf.basis; S.rateAuto = true; } else S.rateAuto = false;
+  S.source = "file"; S.bal = {}; S.prcSel = {}; S.odAmt = {}; S.fixSum = {}; S.defSel = {}; S.defAmt = {}; S.dateOv = {}; S.variants = []; S.cur = 0; S.gN = 0; S.prcMode = "monthly"; S.tPrc = "defer"; S.tPen = "waive"; S.tDist = "equal"; S.finTouched = false; S.nRateTouched = false; S.dsDate = todayISO();
+  writeForm(); update();
+  toast("Загружено платежей: " + S.rows.length + (inf ? " · ставка " + fmtRate(inf.rate) + "% определена по графику" : " · укажите ставку"));
+}
+function readFile(file){
+  if(typeof XLSX === "undefined"){ toast("Модуль Excel не загрузился. Проверьте интернет"); return; }
+  var fr = new FileReader();
+  fr.onload = function(){
+    try{
+      var wb = XLSX.read(new Uint8Array(fr.result), {type:"array", cellDates:false});
+      var aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, raw:true, defval:""});
+      applyParsed(parseTable(aoa));
+    }catch(err){ toast("Не удалось разобрать файл: " + err.message); }
+  };
+  fr.readAsArrayBuffer(file);
+}
+$("fileIn").addEventListener("change", function(){ if(this.files && this.files[0]) readFile(this.files[0]); this.value = ""; });
+var drop = $("drop");
+["dragenter","dragover"].forEach(function(t){ drop.addEventListener(t, function(e){ if(e.dataTransfer && [].indexOf.call(e.dataTransfer.types, "Files") > -1){ e.preventDefault(); drop.classList.add("over"); } }); });
+["dragleave","drop"].forEach(function(t){ drop.addEventListener(t, function(e){ drop.classList.remove("over"); }); });
+drop.addEventListener("drop", function(e){ var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if(f){ e.preventDefault(); readFile(f); } });
+
+/* ================= форма ================= */
+function writeForm(){
+  $("cIssue").value = S.issue; $("cAmount").value = fmtIn(S.amount); $("cRate").value = fmtRate(S.rate);
+  $("cBasis").value = S.basis; $("cDay").value = S.payDay; $("dsDate").value = S.dsDate; $("dsNum").value = S.dsNum;
+  document.querySelector('input[name=odMode][value="' + S.odMode + '"]').checked = true;
+  document.querySelector('input[name=prcMode][value="' + S.prcMode + '"]').checked = true;
+  $("gN").value = S.gN; $("tPrc").value = S.tPrc; $("tPen").value = S.tPen;
+  document.querySelector('input[name=tDist][value="' + S.tDist + '"]').checked = true;
+  $("rateTag").textContent = S.rateAuto ? "из графика" : "";
+  $("nFinish").value = S.nFinish || ""; $("nRate").value = isFinite(S.nRate) ? fmtRate(S.nRate) : "";
+}
+function onForm(e){
+  var id = e.target.id;
+  S.issue = $("cIssue").value; S.amount = parseNum($("cAmount").value); S.rate = parseNum($("cRate").value);
+  S.basis = $("cBasis").value; S.payDay = parseInt($("cDay").value, 10); S.dsDate = $("dsDate").value; S.dsNum = $("dsNum").value.trim();
+  S.odMode = document.querySelector('input[name=odMode]:checked').value;
+  S.prcMode = document.querySelector('input[name=prcMode]:checked').value;
+  var g = parseInt($("gN").value, 10); S.gN = isFinite(g) && g >= 0 ? g : 0;
+  S.tPrc = $("tPrc").value; S.tPen = $("tPen").value; S.tDist = document.querySelector('input[name=tDist]:checked').value;
+  if(id === "cRate"){ S.rateAuto = false; $("rateTag").textContent = ""; }
+  if(id === "nFinish"){ S.nFinish = $("nFinish").value; S.finTouched = true; }
+  if(id === "nRate"){ S.nRate = parseNum($("nRate").value); S.nRateTouched = $("nRate").value.trim() !== ""; }
+  update();
+}
+["cIssue","cAmount","cRate","cBasis","cDay","dsDate","dsNum","nFinish","nRate","gN","tPrc","tPen"].forEach(function(id){ $(id).addEventListener("input", onForm); $(id).addEventListener("change", onForm); });
+document.querySelectorAll('input[name=odMode],input[name=prcMode],input[name=tDist]').forEach(function(el){ el.addEventListener("change", onForm); });
+["cAmount"].forEach(function(id){ $(id).addEventListener("blur", function(){ var v = parseNum(this.value); if(isFinite(v)) this.value = fmtIn(v); }); });
+["cRate","nRate"].forEach(function(id){ $(id).addEventListener("blur", function(){ var v = parseNum(this.value); if(isFinite(v)) this.value = fmtRate(v); }); });
+
+/* ================= текущий график ================= */
+function paidOf(r, R){ var d = parseDate(r.date); if(d === null || R === null || d > R) return false; return r.paid !== false; }
+function renderOld(){
+  var R = parseDate(S.dsDate), bal = S.amount;
+  var h = '<thead><tr><th class="l">Дата</th><th>Гашение ОД</th><th>Гашение %</th><th>Платёж</th><th>Остаток ОД</th><th class="c">✓</th></tr></thead><tbody>';
+  h += '<tr class="issue"><td class="l date">' + (parseDate(S.issue) !== null ? fmtDate(parseDate(S.issue)) : "—") + '</td><td></td><td></td><td></td><td class="bal">' + fmt(S.amount) + '</td><td></td></tr>';
+  S.rows.forEach(function(r, i){
+    var d = parseDate(r.date), past = d !== null && R !== null && d <= R, pd = paidOf(r, R);
+    bal = r2(bal - r.od);
+    h += '<tr class="' + (past ? (pd ? "done" : "over") : "") + '"><td class="l date">' + (d !== null ? fmtDate(d) : r.date) + '</td><td class="' + (r.od ? "" : "zero") + '">' + fmt(r.od) + '</td><td class="pi' + (r.prc ? "" : " zero") + '">' + fmt(r.prc) + '</td><td class="tot">' + fmt(r2(r.od + r.prc)) + '</td><td class="bal">' + fmt(bal) + '</td><td class="c">' + (past ? '<input type="checkbox" data-paid="' + i + '"' + (pd ? " checked" : "") + ' aria-label="Исполнен ' + (i+1) + '">' : '') + '</td></tr>';
+  });
+  $("oldTable").innerHTML = h + '</tbody>';
+}
+$("oldTable").addEventListener("change", function(e){ var i = e.target.dataset.paid; if(i === undefined) return; S.rows[Number(i)].paid = e.target.checked ? null : false; update(); });
+
+/* ================= остатки на дату ДС ================= */
+var BAL = [
+  {k:"odUrg", n:"Срочный ОД"}, {k:"odOver", n:"Просроченный ОД"},
+  {k:"prcOver", n:"Просроченные %"}, {k:"prcCur", n:"Начисленные %"}, {k:"pen", n:"Пеня"}
+];
+function computeAuto(){
+  var R = parseDate(S.dsDate), o = {odUrg:0, odOver:0, prcOver:0, prcCur:0, pen:0, last:null, days:0, after:false};
+  if(R === null) return o;
+  var last = parseDate(S.issue), finish = null;
+  S.rows.forEach(function(r){
+    var d = parseDate(r.date); if(d === null) return;
+    if(finish === null || d > finish) finish = d;
+    if(d > R) o.odUrg = r2(o.odUrg + r.od);
+    else { if(last === null || d > last) last = d; if(!paidOf(r, R)){ o.odOver = r2(o.odOver + r.od); o.prcOver = r2(o.prcOver + r.prc); } }
+  });
+  o.last = last; o.after = finish !== null && R > finish;
+  if(last !== null && R > last){ o.days = daysBy(S.basis, last, R); o.prcCur = RI((o.odUrg + o.odOver) * (S.rate / 100) * o.days / denOf(S.basis)); }
+  return o;
+}
+function bv(k){ return S.bal[k] !== undefined ? S.bal[k] : autoB[k]; }
+function renderBal(){
+  $("balForm").innerHTML = BAL.map(function(b){
+    var man = S.bal[b.k] !== undefined, name = b.n;
+    if(b.k === "prcCur" && autoB.after) name = "Доп. % (после финиша)";
+    var tip = b.k === "prcCur" && autoB.days ? autoB.days + " дн. с " + fmtDate(autoB.last) : "";
+    return '<div class="f"><label for="b-' + b.k + '">' + name + (man ? '<button type="button" class="reset" data-reset="' + b.k + '">↺ авто</button>' : '<span>' + esc(tip) + '</span>') + '</label><input type="text" id="b-' + b.k + '" class="mono ' + (man ? "manual" : "auto") + '" inputmode="decimal" value="' + fmtIn(bv(b.k)) + '"></div>';
+  }).join("");
+}
+$("balForm").addEventListener("change", function(e){ var k = e.target.id.slice(2), v = parseNum(e.target.value); if(isFinite(v)) S.bal[k] = r2(v); else delete S.bal[k]; update(); });
+$("balForm").addEventListener("click", function(e){ var b = e.target.closest("[data-reset]"); if(b){ delete S.bal[b.dataset.reset]; update(); } });
+
+/* ================= даты нового графика ================= */
+function newDates(){
+  var R = parseDate(S.dsDate), F = parseDate(S.nFinish); if(R === null || F === null || !(S.payDay >= 1)) return [];
+  var out = [], k = 1, a = ymd(R), first = Date.UTC(a[0], a[1], Math.min(S.payDay, dim(a[0], a[1])));
+  if(first <= R) first = addMonths(first, 1, S.payDay);
+  for(var d = first; d < F && out.length < 360; d = addMonths(first, k++, S.payDay)) out.push(d);
+  out.push(F);
+  return out;
+}
+function syncDefaults(){
+  var R = parseDate(S.dsDate);
+  if(!S.finTouched){
+    var fin = null; S.rows.forEach(function(r){ var d = parseDate(r.date); if(d !== null && (fin === null || d > fin)) fin = d; });
+    if(fin === null || R === null || fin <= R) fin = R !== null ? addMonths(R, 6, S.payDay || ymd(R)[2]) : null;
+    S.nFinish = fin !== null ? iso(fin) : ""; $("nFinish").value = S.nFinish;
+  }
+  if(!S.nRateTouched){ S.nRate = S.rate; $("nRate").value = fmtRate(S.rate); }
+}
+
+/* ================= расчёт нового графика ================= */
+function compute(){
+  var errs = [], R = parseDate(S.dsDate), Fn = parseDate(S.nFinish);
+  if(R === null) errs.push("Укажите дату ДС.");
+  if(Fn === null) errs.push("Укажите план. финиш.");
+  if(R !== null && Fn !== null && Fn <= R) errs.push("План. финиш должен быть позже даты ДС.");
+  if(!(S.nRate >= 0)) errs.push("Укажите ставку.");
+  BAL.forEach(function(b){ if(!(bv(b.k) >= 0)) errs.push("Проверьте сумму «" + b.n + "»."); });
+  if(errs.length) return {errs:errs};
+  var dates = newDates(), n = dates.length;
+  if(!n) return {errs:["Проверьте день гашения и план. финиш."]};
+  var key = dates.map(iso).join(",");
+  if(key !== S.key){ S.key = key; S.prcSel = {}; S.odAmt = {}; S.fixSum = {}; S.defSel = {}; S.defAmt = {}; S.dateOv = {}; }
+  /* даты, изменённые вручную */
+  var base = dates.slice();
+  dates = dates.map(function(d, i){ var o = S.dateOv[i] ? parseDate(S.dateOv[i]) : null; return o !== null ? o : d; });
+  /* защита: ручная дата, нарушающая порядок, не применяется */
+  for(var q = 0, pv = R; q < n; q++){ if(dates[q] <= pv && S.dateOv[q]){ delete S.dateOv[q]; dates[q] = base[q]; } if(dates[q] <= pv) return {errs:["Даты платежей идут не по порядку — нажмите «Вернуть даты»."]}; pv = dates[q]; }
+  var G = (S.odMode === "ann" || S.odMode === "equal") ? Math.min(S.gN, n - 1) : 0;
+  /* в каком месяце платятся проценты */
+  var payI = function(k){ if(k === n-1) return true; if(S.prcMode === "monthly") return true; if(S.prcMode === "end") return false; return !!S.prcSel[k]; };
+
+  /* суммы на дату ДС */
+  var P = r2(bv("odUrg") + bv("odOver")), capd = bv("odOver"), pool = 0, first = 0, waived = 0;
+  var prcSum = r2(bv("prcOver") + bv("prcCur")), pen = bv("pen");
+  var put = function(v, t){ if(!v) return; if(t === "cap"){ P = r2(P + v); capd = r2(capd + v); } else if(t === "defer") pool = r2(pool + v); else if(t === "first") first = r2(first + v); else waived = r2(waived + v); };
+  put(prcSum, S.tPrc); put(pen, S.tPen);
+  if(!(P > 0)) return {errs:["Нет остатка ОД для нового графика."]};
+
+  /* ОД «выборочно»: суммы, которые вписаны вручную */
+  var manual = new Array(n).fill(0), sumM = 0;
+  if(S.odMode === "manual"){
+    for(var k0 = 0; k0 < n-1; k0++){ var mv = parseNum(S.odAmt[k0]); if(isFinite(mv) && mv > 0){ manual[k0] = r2(mv); sumM = r2(sumM + mv); } }
+    if(sumM > P + 0.004) return {errs:["Сумма ОД по месяцам (" + fmt(sumM) + ") больше ОД нового графика (" + fmt(P) + "). Уменьшите суммы."]};
+  }
+
+  var annual = S.nRate / 100, den = denOf(S.basis), im = annual / 12, f = [], days = [], prev = R;
+  dates.forEach(function(d){ var dd = daysBy(S.basis, prev, d); days.push(dd); f.push(annual * dd / den); prev = d; });
+
+  /* фиксированная общая сумма платежа по месяцам (как в приложении графиков) */
+  var fixed = {}, k;
+  for(k = 0; k < n-1; k++){ var fv = parseNum(S.fixSum[k]); if(isFinite(fv) && fv > 0) fixed[k] = r2(fv); }
+
+  /* отложенные: вместе с процентами / в выбранные месяцы / в последнем платеже */
+  var dPlan = new Array(n).fill(0);
+  if(pool > 0){
+    if(S.tDist === "last") dPlan[n-1] = pool;
+    else if(S.tDist === "manual"){
+      /* свои суммы отложенных по месяцам, остаток — в последний платёж */
+      var sumD = 0;
+      for(k = 0; k < n-1; k++){ var dv = parseNum(S.defAmt[k]); if(isFinite(dv) && dv > 0){ dPlan[k] = r2(dv); sumD = r2(sumD + dv); } }
+      if(sumD > pool + 0.004) return {errs:["Сумма отложенных по месяцам (" + fmt(sumD) + ") больше суммы отложенных (" + fmt(pool) + ")."]};
+      dPlan[n-1] = r2(pool - sumD);
+    } else {
+      /* вместе с % — в месяцы оплаты процентов; равными долями — каждый месяц; выбранные — по галочкам */
+      var idx = [];
+      for(k = 0; k < n; k++){
+        var on = k === n-1 || (S.tDist === "sel" ? !!S.defSel[k] : S.tDist === "every" ? true : payI(k));
+        if(on) idx.push(k);
+      }
+      var part = FL(pool / idx.length), acc = 0;
+      idx.forEach(function(j, q){ if(q < idx.length - 1){ dPlan[j] = part; acc = r2(acc + part); } else dPlan[j] = r2(pool - acc); });
+    }
+  }
+
+  /* сколько месяцев осталось для расчёта ОД (без месяцев с фиксированной суммой и отсрочки) */
+  var remFrom = function(k){ var c = 0; for(var j = Math.max(k, G); j < n; j++) if(fixed[j] === undefined) c++; return Math.max(c, 1); };
+
+  var rows = [], B = P, carry = 0, A = null, recalc = true;
+  for(k = 0; k < n; k++){
+    var accr = B * f[k]; carry += accr;
+    var pI = 0, p = 0, d = dPlan[k], isFix = fixed[k] !== undefined;
+    if(isFix){
+      /* из фиксированной суммы: сначала все проценты, потом отложенные этого месяца, остаток — в ОД */
+      var due = RI(carry), rest = fixed[k];
+      pI = Math.min(rest, due); carry = due - pI; rest = r2(rest - pI);
+      d = Math.min(dPlan[k], rest); if(d < dPlan[k]) dPlan[n-1] = r2(dPlan[n-1] + dPlan[k] - d); rest = r2(rest - d);
+      p = Math.min(B, rest);
+      recalc = true;
+    } else {
+      /* проценты копятся без округления и округляются в месяц оплаты */
+      if(payI(k)){ pI = RI(carry); carry = 0; }
+      if(k === n-1) p = B;
+      else if(S.odMode === "end") p = 0;
+      else if(S.odMode === "manual") p = Math.min(B, manual[k]);
+      else if(k >= G){
+        if(S.odMode === "ann"){
+          /* аннуитет как в ИБСО: формула с месячной ставкой на оставшиеся месяцы; пересчёт после отсрочки и фикс. суммы */
+          if(recalc || A === null){ var m = remFrom(k); A = RP(im > 0 ? B * im / (1 - Math.pow(1 + im, -m)) : B / m); recalc = false; }
+          p = Math.max(0, Math.min(B, r2(A - RI(accr))));
+        } else p = Math.min(B, FL(B / remFrom(k)));
+      }
+    }
+    B = r2(B - p);
+    rows.push({date:dates[k], days:days[k], p:p, i:pI, d:k === n-1 ? dPlan[n-1] : d, x:k === 0 ? first : 0, b:B, off:p === 0 && k < n-1, fix:isFix});
+  }
+  rows.forEach(function(r){ r.t = r2(r.p + r.i + r.d + r.x); });
+  var sum = function(q){ return rows.reduce(function(a,r){ return r2(a + r[q]); }, 0); };
+  return {errs:[], base:base, rows:rows, n:n, P:P, capd:capd, pool:pool, first:first, waived:waived, A:A, R:R,
+    sumP:sum("p"), sumI:sum("i"), sumD:sum("d"), sumX:sum("x"), sumT:sum("t"), gOld:gesv(false), gNew:null};
+}
+
+/* ГЭСВ как в ИБСО: дисконт по дням от выдачи / база */
+function solveIRR(flows, D0, den){
+  var P = flows[0].a, g = function(x){ var s = P; for(var i = 1; i < flows.length; i++) s += flows[i].a / Math.pow(1 + x, daysAct(D0, flows[i].d) / den); return s; };
+  if(g(0) <= 0) return null;
+  var lo = 0, hi = 1; while(g(hi) > 0 && hi < 1e6) hi *= 2;
+  for(var q = 0; q < 200; q++){ var m = (lo + hi) / 2; if(g(m) > 0) lo = m; else hi = m; }
+  return (lo + hi) / 2;
+}
+function gesv(withNew, res){
+  var D0 = parseDate(S.issue), R = parseDate(S.dsDate); if(D0 === null || !(S.amount > 0)) return null;
+  var flows = [{d:D0, a:-S.amount}];
+  var paid = [];
+  S.rows.forEach(function(r){ var d = parseDate(r.date); if(d === null) return; if(!withNew || (R !== null && d <= R && paidOf(r, R))) paid.push({d:d, a:r.od + r.prc}); });
+  if(withNew && res){
+    /* просрочку вписали вручную больше, чем по графику: эти суммы клиент не платил —
+       убираем их из исполненных платежей (с последних дат), чтобы не посчитать дважды */
+    var diff = r2((bv("odOver") + bv("prcOver")) - (autoB.odOver + autoB.prcOver));
+    for(var i = paid.length - 1; i >= 0 && diff > 0; i--){ var cut = Math.min(paid[i].a, diff); paid[i].a = r2(paid[i].a - cut); diff = r2(diff - cut); }
+    if(diff < 0) paid.push({d:R, a:-diff});
+    res.rows.forEach(function(r){ paid.push({d:r.date, a:r.t}); });
+  }
+  paid.forEach(function(x){ if(x.a) flows.push(x); });
+  return solveIRR(flows, D0, denOf(S.basis));
+}
+
+/* ================= отрисовка ================= */
+function renderNew(res){
+  var eb = $("dErrors");
+  if(res.errs.length){ eb.innerHTML = "Проверьте:<ul>" + res.errs.map(function(e){ return "<li>" + esc(e) + "</li>"; }).join("") + "</ul>"; eb.hidden = false; $("newTable").innerHTML = ""; $("dTiles").innerHTML = ""; $("note").textContent = ""; return; }
+  eb.hidden = true;
+  var showD = res.sumD > 0, showX = res.sumX > 0, n = res.n, man = S.odMode === "manual", sel = S.prcMode === "sel", dsel = S.tDist === "sel" && res.pool > 0, dman = S.tDist === "manual" && res.pool > 0;
+  var empty = function(c){ var o = ""; for(var i = 0; i < c; i++) o += "<td></td>"; return o; };
+  var extra = 1 + (man ? 1 : 0) + (sel ? 1 : 0) + (dsel ? 1 : 0) + (dman ? 1 : 0);
+  var h = '<thead><tr><th class="l">Дата</th><th>Дней</th><th>Сумма платежа</th>' + (man ? '<th>ОД вручную</th>' : '') + (sel ? '<th class="c">Платить %</th>' : '') + (dsel ? '<th class="c">Платить отлож.</th>' : '') + (dman ? '<th>Отлож. вручную</th>' : '') + '<th>Гашение ОД</th><th>Гашение %</th>' + (showD ? '<th>Отложенные</th>' : '') + (showX ? '<th>Прочее</th>' : '') + '<th>Общий платёж</th><th>Остаток ОД</th></tr></thead><tbody>';
+  h += '<tr class="issue"><td class="l date">' + fmtDate(res.R) + ' · ДС</td><td></td>' + empty(extra) + '<td></td><td></td>' + (showD ? '<td></td>' : '') + (showX ? '<td></td>' : '') + '<td></td><td class="bal">' + fmt(res.P) + '</td></tr>';
+  res.rows.forEach(function(r, k){
+    var last = k === n-1;
+    var z = function(v, c){ return '<td class="' + (c || "") + (v === 0 ? " zero" : "") + '">' + fmt(v) + '</td>'; };
+    var box = function(attr, on, label){ return '<td class="c"><input type="checkbox" ' + attr + '="' + k + '"' + (last || on ? " checked" : "") + (last ? " disabled" : "") + ' aria-label="' + label + ' ' + (k+1) + '"></td>'; };
+    h += '<tr class="' + (r.off ? "off" : "") + '"><td class="l date"><input type="date" data-dt="' + k + '" class="' + (S.dateOv[k] ? "manual" : "") + '" value="' + iso(r.date) + '" aria-label="Дата платежа ' + (k+1) + '" style="width:140px;padding:3px 6px;font-size:12.5px">' + (r.fix ? ' <span class="chip ex" style="padding:1px 6px;font-size:10.5px">задан</span>' : '') + '</td><td class="bal">' + r.days + '</td>' +
+      '<td>' + (last ? '<span class="hint">авто</span>' : '<input type="text" data-fix="' + k + '" inputmode="decimal" placeholder="авто" value="' + (S.fixSum[k] ? fmtIn(parseNum(S.fixSum[k])) : "") + '" aria-label="Сумма платежа ' + (k+1) + '">') + '</td>' +
+      (man ? '<td>' + (last ? '<span class="hint">остаток</span>' : '<input type="text" data-od="' + k + '" inputmode="decimal" placeholder="0" value="' + (S.odAmt[k] ? fmtIn(parseNum(S.odAmt[k])) : "") + '" aria-label="ОД ' + (k+1) + '">') + '</td>' : '') +
+      (sel ? box("data-pr", S.prcSel[k], "Проценты") : '') + (dsel ? box("data-df", S.defSel[k], "Отложенные") : '') +
+      (dman ? '<td>' + (last ? '<span class="hint">остаток</span>' : '<input type="text" data-dfa="' + k + '" inputmode="decimal" placeholder="0" value="' + (S.defAmt[k] ? fmtIn(parseNum(S.defAmt[k])) : "") + '" aria-label="Отложенные ' + (k+1) + '">') + '</td>' : '') +
+      z(r.p) + z(r.i, "pi") + (showD ? z(r.d, "df") : '') + (showX ? z(r.x) : '') + z(r.t, "tot") + '<td class="bal">' + fmt(r.b) + '</td></tr>';
+  });
+  h += '</tbody><tfoot><tr><td class="l">Итого</td><td class="bal">' + res.rows.reduce(function(a,r){ return a + r.days; }, 0) + '</td>' + empty(extra) + '<td>' + fmt(res.sumP) + '</td><td class="pi">' + fmt(res.sumI) + '</td>' + (showD ? '<td class="df">' + fmt(res.sumD) + '</td>' : '') + (showX ? '<td>' + fmt(res.sumX) + '</td>' : '') + '<td>' + fmt(res.sumT) + '</td><td></td></tr></tfoot>';
+  /* сохраняем фокус в поле ввода при перерисовке */
+  var act = document.activeElement, akey = null, pos = null;
+  if(act && act.dataset){ if(act.dataset.od !== undefined) akey = '[data-od="' + act.dataset.od + '"]'; if(act.dataset.fix !== undefined) akey = '[data-fix="' + act.dataset.fix + '"]'; if(act.dataset.dfa !== undefined) akey = '[data-dfa="' + act.dataset.dfa + '"]'; if(akey) pos = act.selectionStart; }
+  $("newTable").innerHTML = h;
+  if(akey){ var el = $("newTable").querySelector(akey); if(el){ el.focus(); try{ el.setSelectionRange(pos, pos); }catch(e){} } }
+
+  res.gNew = gesv(true, res);
+  var t = function(k, v, s, cls){ return '<div class="tile' + (cls ? " " + cls : "") + '"><span class="k">' + k + '</span><span class="v">' + v + '</span>' + (s ? '<span class="s">' + s + '</span>' : '') + '</div>'; };
+  $("dTiles").innerHTML =
+    t("ОД в новом графике", fmt(res.P), res.capd ? "капитализировано " + fmt(res.capd) : "", "hl") +
+    t("Платежей", String(n), "до " + fmtDate(res.rows[n-1].date)) +
+    t("Проценты по графику", fmt(res.sumI)) +
+    t("Отложенные", fmt(res.pool), res.pool ? DI_NAME[S.tDist] : "") +
+    t("Первым платежом", fmt(res.first)) +
+    t("Прощено", fmt(res.waived)) +
+    t("Всего к оплате", fmt(res.sumT)) +
+    t("ГЭСВ" + (res.gNew !== null && res.gNew * 100 > GESV_MAX ? " — выше " + GESV_MAX + "%" : ""), res.gNew === null ? "—" : fmtRate(Math.round(res.gNew * 1e8) / 1e6) + "%", res.gOld === null ? "" : "был " + fmtRate(Math.round(res.gOld * 1e8) / 1e6) + "%", res.gNew !== null && res.gNew * 100 > GESV_MAX ? "warn" : "");
+  $("note").textContent = "Проценты: остаток ОД × ставка / " + denOf(S.basis) + " × дни, вверх до тенге; первый период — с даты ДС. " + (S.odMode === "ann" ? "Аннуитет по формуле ИБСО (годовая / 12) на месяцы после отсрочки. " : "") + "ГЭСВ: исполненные платежи до ДС + новый график, дисконт по дням от выдачи / " + denOf(S.basis) + ".";
+}
+$("btnDates").addEventListener("click", function(){ S.dateOv = {}; update(); toast("Даты возвращены по дню гашения"); });
+$("newTable").addEventListener("change", function(e){
+  var t = e.target;
+  if(t.dataset.pr !== undefined){ if(t.checked) S.prcSel[t.dataset.pr] = true; else delete S.prcSel[t.dataset.pr]; update(); }
+  if(t.dataset.dfa !== undefined){ var dv = parseNum(t.value); if(isFinite(dv) && dv > 0) S.defAmt[t.dataset.dfa] = t.value; else delete S.defAmt[t.dataset.dfa]; update(); }
+  if(t.dataset.df !== undefined){ if(t.checked) S.defSel[t.dataset.df] = true; else delete S.defSel[t.dataset.df]; update(); }
+  if(t.dataset.od !== undefined){ var v = parseNum(t.value); if(isFinite(v) && v > 0) S.odAmt[t.dataset.od] = t.value; else delete S.odAmt[t.dataset.od]; update(); }
+  if(t.dataset.dt !== undefined){
+    var ix = Number(t.dataset.dt), bi = lastRes && lastRes.base ? iso(lastRes.base[ix]) : "", nv = parseDate(t.value);
+    /* новая дата должна быть между соседними платежами */
+    var prevD = ix === 0 ? parseDate(S.dsDate) : lastRes.rows[ix-1].date, nextD = ix < lastRes.rows.length - 1 ? lastRes.rows[ix+1].date : null;
+    if(nv === null || nv <= prevD || (nextD !== null && nv >= nextD)){
+      toast("Дата должна быть после " + fmtDate(prevD) + (nextD !== null ? " и до " + fmtDate(nextD) : ""));
+      t.value = iso(lastRes.rows[ix].date); return;
+    }
+    if(t.value !== bi) S.dateOv[ix] = t.value; else delete S.dateOv[ix];
+    update();
+  }
+  if(t.dataset.fix !== undefined){ var w = parseNum(t.value); if(isFinite(w) && w > 0) S.fixSum[t.dataset.fix] = t.value; else delete S.fixSum[t.dataset.fix]; update(); }
+});
+
+function renderChips(){
+  var src = S.source === "example" ? '<span class="chip ex">Пример — загрузите график из ИБСО</span>' : '<span class="chip ok">Загружено из ИБСО</span>';
+  var fin = null; S.rows.forEach(function(r){ var d = parseDate(r.date); if(d !== null && (fin === null || d > fin)) fin = d; });
+  $("dChips").innerHTML = src + '<span class="chip">Платежей <b>' + S.rows.length + '</b></span>' + (fin !== null ? '<span class="chip">Финиш <b>' + fmtDate(fin) + '</b></span>' : '') + (res0.gOld !== undefined && res0.gOld !== null ? '<span class="chip">ГЭСВ <b>' + fmtRate(Math.round(res0.gOld * 1e8) / 1e6) + '%</b></span>' : '');
+}
+var res0 = {};
+
+function update(){
+  autoB = computeAuto();
+  renderOld(); renderBal(); syncDefaults();
+  lastRes = compute();
+  if(!S.variants.length){ S.variants = [null]; S.cur = 0; }
+  S.variants[S.cur] = snap();
+  renderVarBar();
+  $("btnDates").hidden = !Object.keys(S.dateOv || {}).length;
+  res0 = {gOld: gesv(false)};
+  renderChips();
+  renderNew(lastRes);
+  $("graceBox").hidden = !(S.odMode === "ann" || S.odMode === "equal");
+  $("odHint").textContent = {ann:"Равные платежи (ОД + %), последний закрывает остаток.", equal:"ОД делится поровну между месяцами после отсрочки.", end:"Весь ОД — последним платежом.", manual:"Впишите суммы ОД в графике ниже, остаток встанет в последний платёж."}[S.odMode];
+  $("dfHint").textContent = {equal:"В те месяцы, когда платятся проценты.", every:"Поровну каждый месяц.", sel:"Отметьте месяцы в графике ниже (колонка «Платить отлож.»).", manual:"Впишите суммы в графике ниже, остаток — в последний платёж.", last:"Все отложенные — последним платежом."}[S.tDist];
+  $("prHint").textContent = {monthly:"Проценты каждый месяц.", end:"Все проценты — последним платежом.", sel:"Отметьте месяцы в графике ниже. Неоплаченные проценты переносятся на ближайший отмеченный месяц."}[S.prcMode];
+}
+
+/* ================= выгрузки ================= */
+var toastTimer;
+function toast(m){ var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2800); }
+function baseName(){ return "ДС" + (S.dsNum ? "_" + S.dsNum.replace(/[\\\/:*?"<>|\s]+/g, "_") : "") + "_" + (lastRes && lastRes.R ? fmtDate(lastRes.R) : ""); }
+async function saveFile(name, data){
+  if(window.claude && typeof window.claude.use === "function"){
+    try{ var dl = await window.claude.use("downloads"); if(!dl){ toast("Скачивание недоступно в этом окне"); return; } await dl.save({filename:name, data:data}); toast("Файл сохранён: " + name); }
+    catch(err){ toast(err && err.code === "declined" ? "Сохранение отменено" : "Не удалось сохранить файл"); }
+    return;
+  }
+  var a = document.createElement("a"); a.href = URL.createObjectURL(data); a.download = name; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500); toast("Файл сохранён: " + name);
+}
+/* ================= варианты ================= */
+var VKEYS = ["dsDate","dsNum","nFinish","finTouched","nRate","nRateTouched","odMode","prcMode","gN","bal","tPrc","tPen","tDist","prcSel","odAmt","fixSum","defSel","defAmt","dateOv","key"];
+function snap(){ var o = {}; VKEYS.forEach(function(k){ o[k] = JSON.parse(JSON.stringify(S[k] === undefined ? null : S[k])); }); return o; }
+function loadV(v){ VKEYS.forEach(function(k){ S[k] = JSON.parse(JSON.stringify(v[k])); }); }
+function renderVarBar(){
+  var h = "";
+  S.variants.forEach(function(v, i){
+    h += '<span class="qa" style="gap:0"><button type="button" class="btn small' + (i === S.cur ? " on" : "") + '" data-v="' + i + '">Вариант ' + (i+1) + '</button>' + (S.variants.length > 1 ? '<button type="button" class="vx" data-vdel="' + i + '" aria-label="Удалить вариант ' + (i+1) + '">✕</button>' : '') + '</span>';
+  });
+  h += '<button type="button" class="btn small" data-vadd="1">+ Вариант</button>';
+  $("varBar").innerHTML = h;
+}
+$("varBar").addEventListener("click", function(e){
+  var t = e.target.closest("button"); if(!t) return;
+  S.variants[S.cur] = snap();
+  if(t.dataset.v !== undefined){ S.cur = Number(t.dataset.v); }
+  else if(t.dataset.vadd){ S.variants.push(snap()); S.cur = S.variants.length - 1; toast("Создан вариант " + (S.cur + 1) + " — копия текущего"); }
+  else if(t.dataset.vdel !== undefined){ var i = Number(t.dataset.vdel); S.variants.splice(i, 1); if(S.cur >= S.variants.length) S.cur = S.variants.length - 1; else if(S.cur > i) S.cur--; else if(S.cur === i) S.cur = Math.min(i, S.variants.length - 1); }
+  loadV(S.variants[S.cur]); writeForm(); update();
+});
+var OD_NAME = {ann:"Аннуитет", equal:"Равными долями", end:"В конце срока", manual:"Выборочно"};
+var PR_NAME = {monthly:"Ежемесячно", end:"В конце срока", sel:"В выбранные месяцы"};
+var TR_NAME = {defer:"в отложенные", first:"первым платежом", cap:"капитализировать", waive:"простить"};
+var DI_NAME = {equal:"вместе с процентами", every:"равными долями", sel:"в выбранные месяцы", manual:"выборочно", last:"в конце срока"};
+
+function grid(r){
+  var showD = r.sumD > 0, showX = r.sumX > 0;
+  var head = ["Дата", "Дней", "Гашение ОД", "Гашение %"].concat(showD ? ["Отложенные"] : []).concat(showX ? ["Прочее (первым платежом)"] : []).concat(["Общий платёж", "Остаток ОД"]);
+  var rows = r.rows.map(function(x){ return [fmtDate(x.date), x.days, x.p, x.i].concat(showD ? [x.d] : []).concat(showX ? [x.x] : []).concat([x.t, x.b]); });
+  var foot = ["Итого", r.rows.reduce(function(a,x){ return a + x.days; }, 0), r.sumP, r.sumI].concat(showD ? [r.sumD] : []).concat(showX ? [r.sumX] : []).concat([r.sumT, ""]);
+  return {head:head, rows:rows, foot:foot};
+}
+function money(ws, skipCols, fromRow){
+  var rg = XLSX.utils.decode_range(ws["!ref"]);
+  for(var R = fromRow || 0; R <= rg.e.r; R++) for(var C = 0; C <= rg.e.c; C++){ var c = ws[XLSX.utils.encode_cell({r:R, c:C})]; if(c && c.t === "n" && skipCols.indexOf(C) === -1) c.z = "#,##0.00"; }
+}
+$("dBtnXlsx").addEventListener("click", function(){
+  if(typeof XLSX === "undefined"){ toast("Модуль Excel не загрузился"); return; }
+  S.variants[S.cur] = snap();
+  var keep = snap(), results = [];
+  S.variants.forEach(function(v){ loadV(v); var r = compute(); if(!r.errs.length) r.gNew = gesv(true, r); results.push({v:v, r:r}); });
+  loadV(keep); update();
+  var okRes = results.filter(function(x){ return !x.r.errs.length; });
+  if(!okRes.length){ toast("Ни один вариант не рассчитан — исправьте условия"); return; }
+  var wb = XLSX.utils.book_new();
+  /* лист сравнения вариантов */
+  var cmp = [["Сравнение вариантов допсоглашения" + (S.dsNum ? " № " + S.dsNum : "")], [],
+    ["Показатель"].concat(results.map(function(x, i){ return "Вариант " + (i+1); }))];
+  var line = function(name, fn){ cmp.push([name].concat(results.map(function(x){ return x.r.errs.length ? "ошибка в условиях" : fn(x.r, x.v); }))); };
+  line("Дата ДС", function(r){ return fmtDate(r.R); });
+  line("План. финиш", function(r){ return fmtDate(r.rows[r.n-1].date); });
+  line("Платежей", function(r){ return r.n; });
+  line("Ставка, % годовых", function(r, v){ return v.nRate; });
+  line("Гашение ОД", function(r, v){ return OD_NAME[v.odMode] + (v.gN && (v.odMode === "ann" || v.odMode === "equal") ? ", отсрочка " + v.gN + " мес." : ""); });
+  line("Гашение процентов", function(r, v){ return PR_NAME[v.prcMode]; });
+  line("Проценты на дату ДС", function(r, v){ return TR_NAME[v.tPrc]; });
+  line("Пеня", function(r, v){ return TR_NAME[v.tPen]; });
+  line("Отложенные гасить", function(r, v){ return DI_NAME[v.tDist]; });
+  line("Фиксированных платежей", function(r, v){ return Object.keys(v.fixSum || {}).length; });
+  line("ОД в новом графике, ₸", function(r){ return r.P; });
+  line("Проценты по графику, ₸", function(r){ return r.sumI; });
+  line("Отложенные, ₸", function(r){ return r.pool; });
+  line("Первым платежом, ₸", function(r){ return r.first; });
+  line("Прощено, ₸", function(r){ return r.waived; });
+  line("Всего к оплате, ₸", function(r){ return r.sumT; });
+  line("Первый платёж, ₸", function(r){ return r.rows[0].t; });
+  line("Максимальный платёж, ₸", function(r){ return Math.max.apply(null, r.rows.map(function(x){ return x.t; })); });
+  line("ГЭСВ, %", function(r){ return r.gNew === null ? "—" : Math.round(r.gNew * 1e8) / 1e6; });
+  var wsC = XLSX.utils.aoa_to_sheet(cmp);
+  money(wsC, [], 13); var rgC = XLSX.utils.decode_range(wsC["!ref"]);
+  for(var C = 1; C <= rgC.e.c; C++){ var gc = wsC[XLSX.utils.encode_cell({r:rgC.e.r, c:C})]; if(gc && gc.t === "n") gc.z = "0.000000"; }
+  wsC["!cols"] = [{wch:28}].concat(results.map(function(){ return {wch:24}; }));
+  XLSX.utils.book_append_sheet(wb, wsC, "Сравнение");
+  /* лист на каждый вариант */
+  results.forEach(function(x, i){
+    if(x.r.errs.length) return;
+    var r = x.r, v = x.v, g = grid(r);
+    var aoa = [["Вариант " + (i+1) + " — график погашения по допсоглашению"], [],
+      ["Дата ДС", fmtDate(r.R)], ["ОД в новом графике, ₸", r.P], ["Ставка, % годовых", v.nRate],
+      ["Гашение ОД", OD_NAME[v.odMode]], ["Гашение процентов", PR_NAME[v.prcMode]],
+      ["Отложенные, ₸", r.pool], ["Первым платежом, ₸", r.first], ["Прощено, ₸", r.waived],
+      ["ГЭСВ, %", r.gNew === null ? "—" : Math.round(r.gNew * 1e8) / 1e6], []];
+    var hr = aoa.length; aoa.push(g.head);
+    aoa.push([fmtDate(r.R) + " (ДС)"].concat(g.head.slice(1, -1).map(function(){ return ""; })).concat([r.P]));
+    g.rows.forEach(function(y){ aoa.push(y); }); aoa.push(g.foot);
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+    money(ws, [1], hr + 1);
+    [3, 7, 8, 9].forEach(function(R){ var c = ws[XLSX.utils.encode_cell({r:R, c:1})]; if(c && c.t === "n") c.z = "#,##0.00"; });
+    ws["!cols"] = [{wch:24}, {wch:8}].concat(g.head.slice(2).map(function(){ return {wch:18}; }));
+    XLSX.utils.book_append_sheet(wb, ws, "Вариант " + (i+1));
+  });
+  saveFile(baseName() + (results.length > 1 ? "_варианты" : "") + ".xlsx", new Blob([XLSX.write(wb, {bookType:"xlsx", type:"array"})], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+});
+$("dBtnCopy").addEventListener("click", function(){
+  if(!lastRes || lastRes.errs.length){ toast("Сначала исправьте условия"); return; }
+  var g = grid(lastRes), n2 = function(v, j){ return typeof v === "number" && j !== 1 ? v.toFixed(2).replace(".", ",") : v; };
+  var text = [g.head.join("\t")].concat(g.rows.map(function(r){ return r.map(n2).join("\t"); })).concat([g.foot.map(n2).join("\t")]).join("\n");
+  var fb = function(){ var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); var ok = false; try{ ok = document.execCommand("copy"); }catch(e){} ta.remove(); toast(ok ? "График скопирован" : "Не удалось скопировать"); };
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function(){ toast("График скопирован. Вставьте в Excel через Ctrl+V"); }, fb); else fb();
+});
+
+/* ================= старт ================= */
+S = freshState();
+buildExample();
+writeForm();
+update();
+})();
+</script>
+<script>
+(function(){
+  var tabs = [["grafik","t-grafik","tab-grafik"],["dop","t-dop","tab-dop"]];
+  function show(name){
+    tabs.forEach(function(t){ var on = t[0] === name; document.getElementById(t[2]).hidden = !on; document.getElementById(t[1]).setAttribute("aria-selected", on ? "true" : "false"); });
+    try{ localStorage.setItem("most-tab", name); }catch(e){}
+  }
+  tabs.forEach(function(t){ document.getElementById(t[1]).addEventListener("click", function(){ show(t[0]); }); });
+  var start = "grafik";
+  try{ var h = (location.hash || "").replace("#",""); if(h === "dop" || h === "grafik") start = h; else { var s = localStorage.getItem("most-tab"); if(s === "dop" || s === "grafik") start = s; } }catch(e){}
+  show(start);
 })();
 </script>
 
