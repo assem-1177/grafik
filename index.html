@@ -421,13 +421,15 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14p
       <div class="form">
         <div class="f"><label for="dsDate">Дата ДС</label><input type="date" id="dsDate"></div>
         <div class="f"><label for="dsNum">№ ДС <span>необяз.</span></label><input type="text" id="dsNum"></div>
-        <div class="f"><label for="nFinish">План. финиш</label><input type="date" id="nFinish"></div>
+        <div class="f"><label for="nDay">День гашения</label><input type="number" id="nDay" class="mono" min="1" max="31"></div>
+        <div class="f"><label for="nFinish">План. финиш <span id="finTag"></span></label><input type="date" id="nFinish"></div>
         <div class="f"><label for="nRate">Новая ставка, % год.</label><input type="text" id="nRate" class="mono" inputmode="decimal"></div>
       </div>
       <div class="form" id="balForm"></div>
       <div class="form">
-        <div class="f"><label for="tPrc">Что делать с процентами на дату ДС</label><select id="tPrc"><option value="defer">В отложенные %</option><option value="first">Оплатить первым платежом</option><option value="cap">Капитализировать в ОД</option><option value="waive">Простить</option></select></div>
-        <div class="f"><label for="tPen">Что делать с пеней</label><select id="tPen"><option value="waive">Простить</option><option value="defer">В отложенные</option><option value="first">Оплатить первым платежом</option></select></div>
+        <div class="f"><label for="tPrc">Просроченные % — куда</label><select id="tPrc"><option value="defer">В отложенные %</option><option value="first">Оплатить первым платежом</option><option value="cap">Капитализировать в ОД</option><option value="waive">Простить</option></select></div>
+        <div class="f"><label for="tPrcCur">Начисленные % — куда</label><select id="tPrcCur"><option value="first">Оплатить первым платежом</option><option value="defer">В отложенные %</option><option value="cap">Капитализировать в ОД</option><option value="waive">Простить</option></select></div>
+        <div class="f"><label for="tPen">Пеня — куда</label><select id="tPen"><option value="waive">Простить</option><option value="defer">В отложенные</option><option value="first">Оплатить первым платежом</option></select></div>
       </div>
       <div class="modes">
         <div class="f">
@@ -437,7 +439,9 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14p
             <label><input type="radio" name="odMode" value="equal"><span>Равными долями</span></label>
             <label><input type="radio" name="odMode" value="end"><span>В конце срока</span></label>
             <label><input type="radio" name="odMode" value="manual"><span>Выборочно</span></label>
+            <label><input type="radio" name="odMode" value="target"><span>По сумме платежа</span></label>
           </div>
+          <div class="qa" id="targetBox"><label for="nTarget" class="hint">Клиент может платить в месяц, ₸:</label><input type="text" id="nTarget" class="mono" inputmode="decimal" style="width:150px" placeholder="500 000"><b class="mono" id="targetInfo" style="font-size:13px;color:var(--accent)"></b></div>
           <div class="qa" id="graceBox"><label for="gN" class="hint">Отсрочка ОД, первых месяцев:</label><input type="number" id="gN" class="mono" min="0" value="0" style="width:64px"></div>
           <span class="hint" id="odHint"></span>
         </div>
@@ -1317,8 +1321,8 @@ function parseTable(aoa){
 var S, lastRes = null, autoB = {};
 function freshState(){
   return {issue:"", amount:NaN, rate:37.9, rateAuto:false, basis:"act360", payDay:5, rows:[], source:"example",
-    dsDate:todayISO(), dsNum:"", nFinish:"", finTouched:false, nRate:NaN, nRateTouched:false, odMode:"ann", prcMode:"monthly", gN:0,
-    bal:{}, tPrc:"defer", tPen:"waive", tDist:"equal",
+    dsDate:todayISO(), dsNum:"", nFinish:"", finTouched:false, nRate:NaN, nRateTouched:false, odMode:"ann", prcMode:"monthly", gN:0, nDay:NaN, target:"",
+    bal:{}, tPrc:"defer", tPrcCur:"first", tPen:"waive", tDist:"equal",
     prcSel:{}, odAmt:{}, fixSum:{}, defSel:{}, defAmt:{}, dateOv:{}, key:"", variants:[], cur:0};
 }
 var GESV_MAX = 46; /* предельное значение ГЭСВ, % — выше подсвечивается красным */
@@ -1377,7 +1381,7 @@ function applyParsed(info){
   S.odMode = ods.length > 1 && Math.max.apply(null, ods) - Math.min.apply(null, ods) <= 1 ? "equal" : "ann";
   var inf = inferRate();
   if(inf){ S.rate = inf.rate; S.basis = inf.basis; S.rateAuto = true; } else S.rateAuto = false;
-  S.source = "file"; S.bal = {}; S.prcSel = {}; S.odAmt = {}; S.fixSum = {}; S.defSel = {}; S.defAmt = {}; S.dateOv = {}; S.variants = []; S.cur = 0; S.gN = 0; S.prcMode = "monthly"; S.tPrc = "defer"; S.tPen = "waive"; S.tDist = "equal"; S.finTouched = false; S.nRateTouched = false; S.dsDate = todayISO();
+  S.source = "file"; S.bal = {}; S.prcSel = {}; S.odAmt = {}; S.fixSum = {}; S.defSel = {}; S.defAmt = {}; S.dateOv = {}; S.variants = []; S.cur = 0; S.gN = 0; S.nDay = S.payDay; S.target = ""; S.prcMode = "monthly"; S.tPrc = "defer"; S.tPrcCur = "first"; S.tPen = "waive"; S.tDist = "equal"; S.finTouched = false; S.nRateTouched = false; S.dsDate = todayISO();
   writeForm(); update();
   toast("Загружено платежей: " + S.rows.length + (inf ? " · ставка " + fmtRate(inf.rate) + "% определена по графику" : " · укажите ставку"));
 }
@@ -1405,7 +1409,7 @@ function writeForm(){
   $("cBasis").value = S.basis; $("cDay").value = S.payDay; $("dsDate").value = S.dsDate; $("dsNum").value = S.dsNum;
   document.querySelector('input[name=odMode][value="' + S.odMode + '"]').checked = true;
   document.querySelector('input[name=prcMode][value="' + S.prcMode + '"]').checked = true;
-  $("gN").value = S.gN; $("tPrc").value = S.tPrc; $("tPen").value = S.tPen;
+  $("gN").value = S.gN; $("nDay").value = isFinite(S.nDay) ? S.nDay : S.payDay; $("nTarget").value = S.target ? fmtIn(parseNum(S.target)) : ""; $("tPrc").value = S.tPrc; $("tPrcCur").value = S.tPrcCur || "first"; $("tPen").value = S.tPen;
   document.querySelector('input[name=tDist][value="' + S.tDist + '"]').checked = true;
   $("rateTag").textContent = S.rateAuto ? "из графика" : "";
   $("nFinish").value = S.nFinish || ""; $("nRate").value = isFinite(S.nRate) ? fmtRate(S.nRate) : "";
@@ -1417,15 +1421,18 @@ function onForm(e){
   S.odMode = document.querySelector('input[name=odMode]:checked').value;
   S.prcMode = document.querySelector('input[name=prcMode]:checked').value;
   var g = parseInt($("gN").value, 10); S.gN = isFinite(g) && g >= 0 ? g : 0;
-  S.tPrc = $("tPrc").value; S.tPen = $("tPen").value; S.tDist = document.querySelector('input[name=tDist]:checked').value;
+  var nd = parseInt($("nDay").value, 10); S.nDay = isFinite(nd) && nd >= 1 && nd <= 31 ? nd : S.payDay;
+  S.target = $("nTarget").value.trim();
+  S.tPrc = $("tPrc").value; S.tPrcCur = $("tPrcCur").value; S.tPen = $("tPen").value; S.tDist = document.querySelector('input[name=tDist]:checked').value;
   if(id === "cRate"){ S.rateAuto = false; $("rateTag").textContent = ""; }
   if(id === "nFinish"){ S.nFinish = $("nFinish").value; S.finTouched = true; }
   if(id === "nRate"){ S.nRate = parseNum($("nRate").value); S.nRateTouched = $("nRate").value.trim() !== ""; }
   update();
 }
-["cIssue","cAmount","cRate","cBasis","cDay","dsDate","dsNum","nFinish","nRate","gN","tPrc","tPen"].forEach(function(id){ $(id).addEventListener("input", onForm); $(id).addEventListener("change", onForm); });
+["cIssue","cAmount","cRate","cBasis","cDay","dsDate","dsNum","nFinish","nRate","gN","nDay","nTarget","tPrc","tPrcCur","tPen"].forEach(function(id){ $(id).addEventListener("input", onForm); $(id).addEventListener("change", onForm); });
 document.querySelectorAll('input[name=odMode],input[name=prcMode],input[name=tDist]').forEach(function(el){ el.addEventListener("change", onForm); });
 ["cAmount"].forEach(function(id){ $(id).addEventListener("blur", function(){ var v = parseNum(this.value); if(isFinite(v)) this.value = fmtIn(v); }); });
+$("nTarget").addEventListener("blur", function(){ var v = parseNum(this.value); if(isFinite(v)) this.value = fmtIn(v); });
 ["cRate","nRate"].forEach(function(id){ $(id).addEventListener("blur", function(){ var v = parseNum(this.value); if(isFinite(v)) this.value = fmtRate(v); }); });
 
 /* ================= текущий график ================= */
@@ -1475,11 +1482,19 @@ $("balForm").addEventListener("change", function(e){ var k = e.target.id.slice(2
 $("balForm").addEventListener("click", function(e){ var b = e.target.closest("[data-reset]"); if(b){ delete S.bal[b.dataset.reset]; update(); } });
 
 /* ================= даты нового графика ================= */
+function dayOf(){ return S.nDay >= 1 ? S.nDay : S.payDay; }
+/* первая дата платежа: ближайшее «день гашения» после даты ДС */
+function firstPay(){
+  var R = parseDate(S.dsDate), day = dayOf(); if(R === null || !(day >= 1)) return null;
+  var a = ymd(R), first = Date.UTC(a[0], a[1], Math.min(day, dim(a[0], a[1])));
+  if(first <= R) first = addMonths(first, 1, day);
+  return first;
+}
+function monthlyDates(count){ var f = firstPay(), out = []; if(f === null) return out; for(var k = 0; k < count; k++) out.push(addMonths(f, k, dayOf())); return out; }
 function newDates(){
-  var R = parseDate(S.dsDate), F = parseDate(S.nFinish); if(R === null || F === null || !(S.payDay >= 1)) return [];
-  var out = [], k = 1, a = ymd(R), first = Date.UTC(a[0], a[1], Math.min(S.payDay, dim(a[0], a[1])));
-  if(first <= R) first = addMonths(first, 1, S.payDay);
-  for(var d = first; d < F && out.length < 360; d = addMonths(first, k++, S.payDay)) out.push(d);
+  var F = parseDate(S.nFinish), first = firstPay(); if(F === null || first === null) return [];
+  var out = [], k = 1;
+  for(var d = first; d < F && out.length < 360; d = addMonths(first, k++, dayOf())) out.push(d);
   out.push(F);
   return out;
 }
@@ -1488,6 +1503,8 @@ function syncDefaults(){
   if(!S.finTouched){
     var fin = null; S.rows.forEach(function(r){ var d = parseDate(r.date); if(d !== null && (fin === null || d > fin)) fin = d; });
     if(fin === null || R === null || fin <= R) fin = R !== null ? addMonths(R, 6, S.payDay || ymd(R)[2]) : null;
+    /* финиш — в тот же месяц, но в выбранный день гашения */
+    if(fin !== null){ var fa = ymd(fin); fin = Date.UTC(fa[0], fa[1], Math.min(dayOf(), dim(fa[0], fa[1]))); if(R !== null && fin <= R) fin = addMonths(fin, 1, dayOf()); }
     S.nFinish = fin !== null ? iso(fin) : ""; $("nFinish").value = S.nFinish;
   }
   if(!S.nRateTouched){ S.nRate = S.rate; $("nRate").value = fmtRate(S.rate); }
@@ -1495,16 +1512,33 @@ function syncDefaults(){
 
 /* ================= расчёт нового графика ================= */
 function compute(){
-  var errs = [], R = parseDate(S.dsDate), Fn = parseDate(S.nFinish);
+  var errs = [], R = parseDate(S.dsDate), Fn = parseDate(S.nFinish), tgt = S.odMode === "target";
   if(R === null) errs.push("Укажите дату ДС.");
-  if(Fn === null) errs.push("Укажите план. финиш.");
-  if(R !== null && Fn !== null && Fn <= R) errs.push("План. финиш должен быть позже даты ДС.");
+  if(!tgt && Fn === null) errs.push("Укажите план. финиш.");
+  if(!tgt && R !== null && Fn !== null && Fn <= R) errs.push("План. финиш должен быть позже даты ДС.");
   if(!(S.nRate >= 0)) errs.push("Укажите ставку.");
   BAL.forEach(function(b){ if(!(bv(b.k) >= 0)) errs.push("Проверьте сумму «" + b.n + "»."); });
   if(errs.length) return {errs:errs};
-  var dates = newDates(), n = dates.length;
+  if(!tgt) return build(newDates(), null);
+  /* «По сумме платежа»: подбираем наименьший срок, при котором последний платёж не больше суммы клиента */
+  var T = parseNum(S.target);
+  if(!(T > 0)) return {errs:["Впишите, сколько клиент может платить в месяц."]};
+  var all = monthlyDates(360), last = null;
+  for(var m = 1; m <= all.length; m++){
+    var res = build(all.slice(0, m), T);
+    if(res.errs.length) return res;
+    last = res;
+    if(res.rows[m-1].t <= T + 0.5){ res.autoFinish = res.rows[m-1].date; return res; }
+    /* сумма меньше процентов за месяц — долг не уменьшается при любом сроке */
+    if(m === 1){ var Pn = res.P, mInt = RI(Pn * (S.nRate / 100) * 31 / denOf(S.basis)); if(T <= mInt) return {errs:["Платёж " + fmt(T) + " ₸ меньше процентов за месяц (около " + fmt(mInt) + " ₸) — долг не уменьшается. Увеличьте сумму."]}; }
+  }
+  return {errs:["Даже за 360 месяцев долг не погашается суммой " + fmt(T) + " ₸. Увеличьте платёж."]};
+}
+
+function build(dates, target){
+  var R = parseDate(S.dsDate), errs = [], n = dates.length;
   if(!n) return {errs:["Проверьте день гашения и план. финиш."]};
-  var key = dates.map(iso).join(",");
+  var key = iso(dates[0]) + "|" + dayOf();
   if(key !== S.key){ S.key = key; S.prcSel = {}; S.odAmt = {}; S.fixSum = {}; S.defSel = {}; S.defAmt = {}; S.dateOv = {}; }
   /* даты, изменённые вручную */
   var base = dates.slice();
@@ -1512,14 +1546,15 @@ function compute(){
   /* защита: ручная дата, нарушающая порядок, не применяется */
   for(var q = 0, pv = R; q < n; q++){ if(dates[q] <= pv && S.dateOv[q]){ delete S.dateOv[q]; dates[q] = base[q]; } if(dates[q] <= pv) return {errs:["Даты платежей идут не по порядку — нажмите «Вернуть даты»."]}; pv = dates[q]; }
   var G = (S.odMode === "ann" || S.odMode === "equal") ? Math.min(S.gN, n - 1) : 0;
+  /* ручные значения по месяцам, выходящие за срок, не учитываются */
   /* в каком месяце платятся проценты */
-  var payI = function(k){ if(k === n-1) return true; if(S.prcMode === "monthly") return true; if(S.prcMode === "end") return false; return !!S.prcSel[k]; };
+  var payI = function(k){ if(k === n-1 || S.odMode === "target") return true; if(S.prcMode === "monthly") return true; if(S.prcMode === "end") return false; return !!S.prcSel[k]; };
 
   /* суммы на дату ДС */
   var P = r2(bv("odUrg") + bv("odOver")), capd = bv("odOver"), pool = 0, first = 0, waived = 0;
-  var prcSum = r2(bv("prcOver") + bv("prcCur")), pen = bv("pen");
+  var pen = bv("pen");
   var put = function(v, t){ if(!v) return; if(t === "cap"){ P = r2(P + v); capd = r2(capd + v); } else if(t === "defer") pool = r2(pool + v); else if(t === "first") first = r2(first + v); else waived = r2(waived + v); };
-  put(prcSum, S.tPrc); put(pen, S.tPen);
+  put(bv("prcOver"), S.tPrc); put(bv("prcCur"), S.tPrcCur || "first"); put(pen, S.tPen);
   if(!(P > 0)) return {errs:["Нет остатка ОД для нового графика."]};
 
   /* ОД «выборочно»: суммы, которые вписаны вручную */
@@ -1534,7 +1569,7 @@ function compute(){
 
   /* фиксированная общая сумма платежа по месяцам (как в приложении графиков) */
   var fixed = {}, k;
-  for(k = 0; k < n-1; k++){ var fv = parseNum(S.fixSum[k]); if(isFinite(fv) && fv > 0) fixed[k] = r2(fv); }
+  for(k = 0; k < n-1; k++){ var fv = parseNum(S.fixSum[k]); if(isFinite(fv) && fv > 0) fixed[k] = r2(fv); else if(target) fixed[k] = target; }
 
   /* отложенные: вместе с процентами / в выбранные месяцы / в последнем платеже */
   var dPlan = new Array(n).fill(0);
@@ -1587,7 +1622,7 @@ function compute(){
       }
     }
     B = r2(B - p);
-    rows.push({date:dates[k], days:days[k], p:p, i:pI, d:k === n-1 ? dPlan[n-1] : d, x:k === 0 ? first : 0, b:B, off:p === 0 && k < n-1, fix:isFix});
+    rows.push({date:dates[k], days:days[k], p:p, i:pI, d:k === n-1 ? dPlan[n-1] : d, x:k === 0 ? first : 0, b:B, off:p === 0 && k < n-1, fix:isFix && !!S.fixSum[k]});
   }
   rows.forEach(function(r){ r.t = r2(r.p + r.i + r.d + r.x); });
   var sum = function(q){ return rows.reduce(function(a,r){ return r2(a + r[q]); }, 0); };
@@ -1625,7 +1660,7 @@ function renderNew(res){
   var eb = $("dErrors");
   if(res.errs.length){ eb.innerHTML = "Проверьте:<ul>" + res.errs.map(function(e){ return "<li>" + esc(e) + "</li>"; }).join("") + "</ul>"; eb.hidden = false; $("newTable").innerHTML = ""; $("dTiles").innerHTML = ""; $("note").textContent = ""; return; }
   eb.hidden = true;
-  var showD = res.sumD > 0, showX = res.sumX > 0, n = res.n, man = S.odMode === "manual", sel = S.prcMode === "sel", dsel = S.tDist === "sel" && res.pool > 0, dman = S.tDist === "manual" && res.pool > 0;
+  var showD = res.sumD > 0, showX = res.sumX > 0, n = res.n, man = S.odMode === "manual", sel = S.prcMode === "sel" && S.odMode !== "target", dsel = S.tDist === "sel" && res.pool > 0, dman = S.tDist === "manual" && res.pool > 0;
   var empty = function(c){ var o = ""; for(var i = 0; i < c; i++) o += "<td></td>"; return o; };
   var extra = 1 + (man ? 1 : 0) + (sel ? 1 : 0) + (dsel ? 1 : 0) + (dman ? 1 : 0);
   var h = '<thead><tr><th class="l">Дата</th><th>Дней</th><th>Сумма платежа</th>' + (man ? '<th>ОД вручную</th>' : '') + (sel ? '<th class="c">Платить %</th>' : '') + (dsel ? '<th class="c">Платить отлож.</th>' : '') + (dman ? '<th>Отлож. вручную</th>' : '') + '<th>Гашение ОД</th><th>Гашение %</th>' + (showD ? '<th>Отложенные</th>' : '') + (showX ? '<th>Прочее</th>' : '') + '<th>Общий платёж</th><th>Остаток ОД</th></tr></thead><tbody>';
@@ -1701,9 +1736,14 @@ function update(){
   renderChips();
   renderNew(lastRes);
   $("graceBox").hidden = !(S.odMode === "ann" || S.odMode === "equal");
-  $("odHint").textContent = {ann:"Равные платежи (ОД + %), последний закрывает остаток.", equal:"ОД делится поровну между месяцами после отсрочки.", end:"Весь ОД — последним платежом.", manual:"Впишите суммы ОД в графике ниже, остаток встанет в последний платёж."}[S.odMode];
+  $("targetBox").hidden = S.odMode !== "target";
+  $("nFinish").disabled = S.odMode === "target";
+  $("finTag").textContent = S.odMode === "target" ? "подобран" : "";
+  if(S.odMode === "target" && lastRes && lastRes.autoFinish){ $("nFinish").value = iso(lastRes.autoFinish); }
+  $("targetInfo").textContent = S.odMode === "target" && lastRes && !lastRes.errs.length ? "→ " + lastRes.n + " " + plural(lastRes.n, "платёж", "платежа", "платежей") + ", окончание " + fmtDate(lastRes.rows[lastRes.n-1].date) + ", последний " + fmt(lastRes.rows[lastRes.n-1].t) + " ₸" : "";
+  $("odHint").textContent = {ann:"Равные платежи (ОД + %), последний закрывает остаток.", equal:"ОД делится поровну между месяцами после отсрочки.", end:"Весь ОД — последним платежом.", manual:"Впишите суммы ОД в графике ниже, остаток встанет в последний платёж.", target:"Каждый месяц клиент платит эту сумму: сначала проценты и отложенные, остальное в ОД. Срок подбирается сам."}[S.odMode];
   $("dfHint").textContent = {equal:"В те месяцы, когда платятся проценты.", every:"Поровну каждый месяц.", sel:"Отметьте месяцы в графике ниже (колонка «Платить отлож.»).", manual:"Впишите суммы в графике ниже, остаток — в последний платёж.", last:"Все отложенные — последним платежом."}[S.tDist];
-  $("prHint").textContent = {monthly:"Проценты каждый месяц.", end:"Все проценты — последним платежом.", sel:"Отметьте месяцы в графике ниже. Неоплаченные проценты переносятся на ближайший отмеченный месяц."}[S.prcMode];
+  if(S.odMode === "target"){ $("prHint").textContent = "В режиме «По сумме платежа» проценты и отложенные гасятся каждый месяц из этой суммы."; } else $("prHint").textContent = {monthly:"Проценты каждый месяц.", end:"Все проценты — последним платежом.", sel:"Отметьте месяцы в графике ниже. Неоплаченные проценты переносятся на ближайший отмеченный месяц."}[S.prcMode];
 }
 
 /* ================= выгрузки ================= */
@@ -1720,9 +1760,9 @@ async function saveFile(name, data){
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500); toast("Файл сохранён: " + name);
 }
 /* ================= варианты ================= */
-var VKEYS = ["dsDate","dsNum","nFinish","finTouched","nRate","nRateTouched","odMode","prcMode","gN","bal","tPrc","tPen","tDist","prcSel","odAmt","fixSum","defSel","defAmt","dateOv","key"];
+var VKEYS = ["dsDate","dsNum","nFinish","finTouched","nRate","nRateTouched","odMode","prcMode","gN","nDay","target","bal","tPrc","tPrcCur","tPen","tDist","prcSel","odAmt","fixSum","defSel","defAmt","dateOv","key"];
 function snap(){ var o = {}; VKEYS.forEach(function(k){ o[k] = JSON.parse(JSON.stringify(S[k] === undefined ? null : S[k])); }); return o; }
-function loadV(v){ VKEYS.forEach(function(k){ S[k] = JSON.parse(JSON.stringify(v[k])); }); }
+function loadV(v){ VKEYS.forEach(function(k){ S[k] = JSON.parse(JSON.stringify(v[k] === undefined ? null : v[k])); }); if(!(S.nDay >= 1)) S.nDay = S.payDay; if(S.target === null) S.target = ""; if(!S.tPrcCur) S.tPrcCur = "first"; }
 function renderVarBar(){
   var h = "";
   S.variants.forEach(function(v, i){
@@ -1739,7 +1779,7 @@ $("varBar").addEventListener("click", function(e){
   else if(t.dataset.vdel !== undefined){ var i = Number(t.dataset.vdel); S.variants.splice(i, 1); if(S.cur >= S.variants.length) S.cur = S.variants.length - 1; else if(S.cur > i) S.cur--; else if(S.cur === i) S.cur = Math.min(i, S.variants.length - 1); }
   loadV(S.variants[S.cur]); writeForm(); update();
 });
-var OD_NAME = {ann:"Аннуитет", equal:"Равными долями", end:"В конце срока", manual:"Выборочно"};
+var OD_NAME = {ann:"Аннуитет", equal:"Равными долями", end:"В конце срока", manual:"Выборочно", target:"По сумме платежа"};
 var PR_NAME = {monthly:"Ежемесячно", end:"В конце срока", sel:"В выбранные месяцы"};
 var TR_NAME = {defer:"в отложенные", first:"первым платежом", cap:"капитализировать", waive:"простить"};
 var DI_NAME = {equal:"вместе с процентами", every:"равными долями", sel:"в выбранные месяцы", manual:"выборочно", last:"в конце срока"};
@@ -1772,9 +1812,10 @@ $("dBtnXlsx").addEventListener("click", function(){
   line("План. финиш", function(r){ return fmtDate(r.rows[r.n-1].date); });
   line("Платежей", function(r){ return r.n; });
   line("Ставка, % годовых", function(r, v){ return v.nRate; });
-  line("Гашение ОД", function(r, v){ return OD_NAME[v.odMode] + (v.gN && (v.odMode === "ann" || v.odMode === "equal") ? ", отсрочка " + v.gN + " мес." : ""); });
+  line("Гашение ОД", function(r, v){ return OD_NAME[v.odMode] + (v.odMode === "target" ? ", " + fmtIn(parseNum(v.target)) + " ₸ в месяц" : "") + (v.gN && (v.odMode === "ann" || v.odMode === "equal") ? ", отсрочка " + v.gN + " мес." : ""); });
   line("Гашение процентов", function(r, v){ return PR_NAME[v.prcMode]; });
-  line("Проценты на дату ДС", function(r, v){ return TR_NAME[v.tPrc]; });
+  line("Просроченные %", function(r, v){ return TR_NAME[v.tPrc]; });
+  line("Начисленные %", function(r, v){ return TR_NAME[v.tPrcCur || "first"]; });
   line("Пеня", function(r, v){ return TR_NAME[v.tPen]; });
   line("Отложенные гасить", function(r, v){ return DI_NAME[v.tDist]; });
   line("Фиксированных платежей", function(r, v){ return Object.keys(v.fixSum || {}).length; });
