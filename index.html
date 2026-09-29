@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+<title>График погашения MOST</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F2F5F4;
+  --surface:#FFFFFF;
+  --surface-2:#E9EFED;
+  --ink:#14232A;
+  --muted:#5A6A6F;
+  --line:#D5DEDB;
+  --accent:#0D6A59;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#DCEEE9;
+  --int:#945710;
+  --int-soft:#FAF0E0;
+  --danger:#B42318;
+  --danger-soft:#FCEBE9;
+  --focus:#1B8A74;
+  --shadow:0 1px 2px rgba(20,35,42,.06),0 4px 16px rgba(20,35,42,.05);
+  --font:"Onest",-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0E1618;--surface:#152124;--surface-2:#1B2A2E;--ink:#E3ECEA;--muted:#93A5A8;--line:#2A3B3F;
+    --accent:#45B99F;--accent-ink:#062019;--accent-soft:#173B34;--int:#E3A95E;--int-soft:#3A2A15;
+    --danger:#F28B80;--danger-soft:#3C1E1B;--focus:#5FD0B5;--shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0E1618;--surface:#152124;--surface-2:#1B2A2E;--ink:#E3ECEA;--muted:#93A5A8;--line:#2A3B3F;
+  --accent:#45B99F;--accent-ink:#062019;--accent-soft:#173B34;--int:#E3A95E;--int-soft:#3A2A15;
+  --danger:#F28B80;--danger-soft:#3C1E1B;--focus:#5FD0B5;--shadow:0 1px 2px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14px;line-height:1.45}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:16px;padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.brand{display:flex;flex-direction:column;gap:2px}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08);color:var(--accent-ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+.panel h2{margin:0;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.lbl{font-size:13px;font-weight:500}
+.opt{color:var(--muted);font-weight:400}
+.due{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px;font-size:13px;padding:8px 11px;border-radius:8px;background:var(--accent-soft);color:var(--ink)}
+.due b{font-family:var(--mono);font-weight:600;color:var(--accent)}
+.due span{color:var(--muted);font-size:12px}
+.hint{font-size:12px;color:var(--muted)}
+input[type=text],input[type=date],input[type=number]{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;width:100%;min-width:0}
+input.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+input:hover{border-color:var(--muted)}
+input.bad{border-color:var(--danger);background:var(--danger-soft)}
+.row{display:flex;gap:8px;align-items:stretch}
+.row>*{flex:1 1 0;min-width:0}
+.row>.shrink{flex:0 0 auto}
+.seg{display:flex;flex-wrap:wrap;background:var(--surface-2);border-radius:9px;padding:3px;gap:3px}
+.seg label{flex:1 1 auto;position:relative;cursor:pointer}
+.seg input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.seg span{display:block;text-align:center;padding:7px 10px;border-radius:7px;font-size:13px;font-weight:500;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
+.seg input:checked+span{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg input:focus-visible+span{outline:2px solid var(--focus);outline-offset:1px}
+.seg.wrap2 span{white-space:normal}
+.sub{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:10px;background:var(--bg);border:1px dashed var(--line)}
+details.periods{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+details.periods>summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:600}
+details.periods>summary::-webkit-details-marker{display:none}
+.chev{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--surface-2);transition:transform .2s;flex:0 0 auto}
+details[open] .chev{transform:rotate(180deg)}
+.sum-l{display:flex;flex-direction:column;gap:2px}
+.sum-l small{font-weight:400;color:var(--muted);font-size:12px}
+.periods-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.periods-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ptable-wrap{overflow-x:auto;max-height:420px;overflow-y:auto;border:1px solid var(--line);border-radius:10px}
+table.ptable{border-collapse:collapse;width:100%;min-width:420px}
+.ptable th,.ptable td{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.ptable th{position:sticky;top:0;background:var(--surface-2);font-size:12px;font-weight:600;color:var(--muted);z-index:1}
+.ptable td.n{color:var(--muted);font-family:var(--mono);width:44px}
+.ptable input[type=date],.ptable input[type=text]{padding:6px 8px;font-size:14px}
+.ptable input.changed{border-color:var(--int);background:var(--int-soft)}
+.ptable input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
+.auto{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.result{display:flex;flex-direction:column;gap:12px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.tile .k{font-size:12px;color:var(--muted)}
+.tile .v{font-family:var(--mono);font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.tile.warn{background:var(--danger-soft);border-color:var(--danger)}
+.tile.warn .k,.tile.warn .v{color:var(--danger)}
+.tile.hl{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tile.hl .k{color:var(--accent-ink);opacity:.85}
+.tile.int .v{color:var(--int)}
+.sched{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.sched-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.sched-head h2{margin:0;font-size:17px;font-weight:600}
+.cond{font-size:12.5px;color:var(--muted);margin-top:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink)}
+.sched-actions{display:flex;gap:8px;flex-wrap:wrap}
+.table-wrap{overflow-x:auto}
+table.grid{border-collapse:collapse;width:100%;min-width:640px;font-variant-numeric:tabular-nums}
+.grid th{background:var(--surface-2);font-size:12px;font-weight:600;color:var(--muted);text-align:right;padding:10px 14px;white-space:nowrap;border-bottom:1px solid var(--line)}
+.grid th:first-child,.grid td:first-child{text-align:left}
+.grid td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:13.5px;white-space:nowrap}
+.grid td.date{font-family:var(--font);font-weight:500;font-size:14px}
+.grid td.days{color:var(--muted);font-size:12.5px}
+.grid td.pi{color:var(--int)}
+.grid td.tot{font-weight:600}
+.grid td.bal{color:var(--muted)}
+.grid tr.issue td{background:var(--accent-soft)}
+.grid tr.issue td.date small{display:block;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.grid tr:hover td{background:var(--surface-2)}
+.grid tr.issue:hover td{background:var(--accent-soft)}
+.grid tfoot td{font-weight:700;background:var(--surface-2);border-bottom:none;border-top:2px solid var(--ink)}
+.grid td.zero{color:var(--line)}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:1px 6px;border-radius:999px;background:var(--int-soft);color:var(--int);vertical-align:middle;margin-left:4px}
+.errors{background:var(--danger-soft);color:var(--danger);border:1px solid var(--danger);border-radius:10px;padding:12px 14px;font-weight:500}
+.errors ul{margin:4px 0 0;padding-left:18px}
+.note{font-size:12px;color:var(--muted);padding:10px 16px 14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:9px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:calc(100% - 32px);z-index:10}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (max-width:520px){h1{font-size:22px}.tile .v{font-size:17px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="eyebrow">МФО MOST · бизнес-блок</span>
+      <h1>График погашения займа</h1>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="btn" id="btnReset">Новый расчёт</button>
+    </div>
+  </header>
+
+  <form id="f" class="panels" autocomplete="off" novalidate>
+    <section class="panel" aria-labelledby="h-loan">
+      <h2 id="h-loan">Займ</h2>
+      <div class="field">
+        <label for="fio">ФИО клиента <span class="opt">(необязательно)</span></label>
+        <input type="text" id="fio" placeholder="Например: Серикова Айгерим Болатовна">
+      </div>
+      <div class="field">
+        <label for="amount">Сумма выдачи, ₸</label>
+        <input type="text" id="amount" class="num" inputmode="decimal" value="1 000 000">
+      </div>
+      <div class="field">
+        <label for="issue">Дата выдачи</label>
+        <input type="date" id="issue">
+      </div>
+      <div class="field">
+        <span class="lbl" id="l-term">Срок</span>
+        <div class="row">
+          <input type="number" id="term" class="num" min="1" step="1" value="12" aria-labelledby="l-term">
+          <div class="seg shrink" role="radiogroup" aria-labelledby="l-term">
+            <label><input type="radio" name="termUnit" value="m" checked><span>мес.</span></label>
+            <label><input type="radio" name="termUnit" value="d"><span>дней</span></label>
+          </div>
+        </div>
+        <div class="due" id="termDue" hidden></div>
+      </div>
+      <div class="field">
+        <label for="payDay">Число погашения каждого месяца</label>
+        <input type="number" id="payDay" class="num" min="1" max="31" step="1">
+        <span class="hint" id="payDayHint">По умолчанию совпадает с числом выдачи. Каждую дату можно изменить вручную в блоке «Даты и суммы по периодам».</span>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-rate">
+      <h2 id="h-rate">Ставка и расчёт процентов</h2>
+      <div class="field">
+        <span class="lbl" id="l-rate">Процентная ставка</span>
+        <div class="row">
+          <input type="text" id="rate" class="num" inputmode="decimal" value="37,9" aria-labelledby="l-rate">
+        </div>
+        <div class="seg" role="radiogroup" aria-labelledby="l-rate">
+          <label><input type="radio" name="rateUnit" value="y" checked><span>% в год</span></label>
+          <label><input type="radio" name="rateUnit" value="m"><span>% в месяц</span></label>
+          <label><input type="radio" name="rateUnit" value="d"><span>% в день</span></label>
+        </div>
+        <span class="hint" id="rateHint"></span>
+      </div>
+      <div class="field">
+        <span class="lbl" id="l-basis">База начисления процентов</span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-basis">
+          <label><input type="radio" name="basis" value="act360" checked><span>факт/360</span></label>
+          <label><input type="radio" name="basis" value="act365"><span>факт/365</span></label>
+          <label><input type="radio" name="basis" value="30360"><span>30/360</span></label>
+        </div>
+        <span class="hint" id="basisHint"></span>
+      </div>
+      <div class="field">
+        <span class="lbl" id="l-round">Округление</span>
+        <div class="seg wrap2" role="radiogroup" aria-labelledby="l-round">
+          <label><input type="radio" name="rounding" value="ibso" checked><span>До тенге, как в ИБСО</span></label>
+          <label><input type="radio" name="rounding" value="tiyn"><span>До тиынов</span></label>
+        </div>
+        <span class="hint" id="roundHint"></span>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-method">
+      <h2 id="h-method">Порядок погашения</h2>
+      <div class="field">
+        <span class="lbl" id="l-method">Метод</span>
+        <div class="seg" role="radiogroup" aria-labelledby="l-method">
+          <label><input type="radio" name="method" value="ann" checked><span>Аннуитет</span></label>
+          <label><input type="radio" name="method" value="diff"><span>Дифференцированный</span></label>
+        </div>
+        <span class="hint" id="methodHint"></span>
+      </div>
+      <div class="field" id="annBox">
+        <span class="lbl" id="l-ann">Расчёт аннуитетного платежа</span>
+        <div class="seg wrap2" role="radiogroup" aria-labelledby="l-ann">
+          <label><input type="radio" name="annMode" value="ibso" checked><span>Как в ИБСО</span></label>
+          <label><input type="radio" name="annMode" value="exact"><span>Точный по дням</span></label>
+        </div>
+        <span class="hint" id="annHint"></span>
+      </div>
+      <div class="sub" id="diffBox" hidden>
+        <div class="field">
+          <span class="lbl" id="l-prin">Основной долг (ОД)</span>
+          <div class="seg wrap2" role="radiogroup" aria-labelledby="l-prin">
+            <label><input type="radio" name="prinMode" value="equal" checked><span>Равными долями</span></label>
+            <label><input type="radio" name="prinMode" value="end"><span>В конце срока</span></label>
+            <label><input type="radio" name="prinMode" value="sel"><span>В выбранные месяцы</span></label>
+            <label><input type="radio" name="prinMode" value="manual"><span>Свои суммы</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl" id="l-int">Проценты</span>
+          <div class="seg wrap2" role="radiogroup" aria-labelledby="l-int">
+            <label><input type="radio" name="intMode" value="monthly" checked><span>Ежемесячно</span></label>
+            <label><input type="radio" name="intMode" value="end"><span>В конце срока</span></label>
+            <label><input type="radio" name="intMode" value="sel"><span>В выбранные месяцы</span></label>
+          </div>
+        </div>
+        <span class="hint" id="diffHint"></span>
+      </div>
+    </section>
+  </form>
+
+  <details class="periods" id="periods">
+    <summary>
+      <span class="sum-l">Даты и суммы по периодам
+        <small id="periodsSub">Изменить дату любого платежа, выбрать месяцы или вписать свои суммы ОД</small>
+      </span>
+      <span class="chev" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+    </summary>
+    <div class="periods-body">
+      <div class="periods-tools">
+        <span class="hint" id="periodsHint"></span>
+        <button type="button" class="btn" id="btnResetDates">Вернуть даты по умолчанию</button>
+      </div>
+      <div class="ptable-wrap">
+        <table class="ptable" id="ptable"></table>
+      </div>
+    </div>
+  </details>
+
+  <section class="result" aria-live="polite">
+    <div class="errors" id="errors" hidden></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="sched" id="sched">
+      <div class="sched-head">
+        <div>
+          <h2 id="schedTitle">График погашения</h2>
+          <div class="cond" id="cond"></div>
+          <div class="chips" id="chips"></div>
+        </div>
+        <div class="sched-actions">
+          <button type="button" class="btn primary" id="btnXlsx">Скачать Excel</button>
+          <button type="button" class="btn" id="btnPrint">Версия для печати</button>
+          <button type="button" class="btn" id="btnCopy">Копировать таблицу</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="grid" id="grid"></table>
+      </div>
+      <p class="note">Расчёт носит информационный характер. ГЭСВ считается как в ИБСО на дату начала договора: платежи дисконтируются по фактическим дням от выдачи, делённым на базу (360 или 365), без учёта комиссий. <span id="roundNote"></span></p>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+"use strict";
+var DAY = 86400000;
+var $ = function(id){ return document.getElementById(id); };
+var form = $("f");
+
+/* ---------- даты ---------- */
+function todayISO(){
+  var d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+function parseDate(s){
+  if(!s || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+  var p = s.split("-").map(Number);
+  var ms = Date.UTC(p[0], p[1]-1, p[2]);
+  var chk = new Date(ms);
+  if(chk.getUTCDate() !== p[2]) return null;
+  return ms;
+}
+function iso(ms){ return new Date(ms).toISOString().slice(0,10); }
+function ymd(ms){ var d = new Date(ms); return [d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()]; }
+function dim(y,m){ return new Date(Date.UTC(y, m+1, 0)).getUTCDate(); }
+function addMonths(ms, k, day){
+  var a = ymd(ms), t = a[1] + k;
+  var yy = a[0] + Math.floor(t/12), mm = ((t % 12) + 12) % 12;
+  return Date.UTC(yy, mm, Math.min(day, dim(yy, mm)));
+}
+function daysAct(a,b){ return Math.round((b - a) / DAY); }
+function days30(a,b){
+  var x = ymd(a), y = ymd(b);
+  var d1 = Math.min(x[2], 30), d2 = Math.min(y[2], 30);
+  return 360*(y[0]-x[0]) + 30*(y[1]-x[1]) + (d2 - d1);
+}
+function fmtDate(ms){ var a = ymd(ms); return String(a[2]).padStart(2,"0") + "." + String(a[1]+1).padStart(2,"0") + "." + a[0]; }
+
+/* ---------- числа ---------- */
+function parseNum(s){
+  if(s === null || s === undefined) return NaN;
+  var t = String(s).replace(/[\s  ]/g, "").replace(",", ".");
+  if(t === "") return NaN;
+  return Number(t);
+}
+function r2(x){ return Math.round((x + (x >= 0 ? 1e-9 : -1e-9)) * 100) / 100; }
+function fmt(x){ return (Math.abs(x) < 0.005 ? 0 : x).toLocaleString("ru-RU", {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtIn(x){
+  if(!isFinite(x)) return "";
+  return x.toLocaleString("ru-RU", {minimumFractionDigits:0, maximumFractionDigits:2}).replace(/ | /g, " ");
+}
+function fmtRate(x){
+  if(!isFinite(x)) return "";
+  return x.toLocaleString("ru-RU", {minimumFractionDigits:0, maximumFractionDigits:6}).replace(/\u00a0|\u202f/g, " ");
+}
+function fmtPct(x, d){ return x.toLocaleString("ru-RU", {minimumFractionDigits:d, maximumFractionDigits:d}); }
+function plural(n, one, few, many){
+  var a = Math.abs(n) % 100, b = a % 10;
+  if(a > 10 && a < 20) return many;
+  if(b > 1 && b < 5) return few;
+  if(b === 1) return one;
+  return many;
+}
+
+/* ---------- состояние ---------- */
+var S;
+function freshState(){
+  var t = todayISO();
+  return {
+    fio:"", amount:1000000, issue:t, term:12, termUnit:"m",
+    payDay: Number(t.slice(8,10)), payDayTouched:false,
+    rate:37.9, rateUnit:"y", basis:"act360", rounding:"ibso", method:"ann", annMode:"ibso",
+    prinMode:"equal", intMode:"monthly",
+    dateOv:{}, payFix:{}, prinSel:{}, prinAmt:{}, intSel:{}
+  };
+}
+var lastStruct = "", lastN = -1, lastPanelKey = "";
+var current = null;
+
+function radio(name){ var el = form.querySelector('input[name="'+name+'"]:checked'); return el ? el.value : null; }
+function setRadio(name, v){ var el = form.querySelector('input[name="'+name+'"][value="'+v+'"]'); if(el) el.checked = true; }
+
+function writeForm(){
+  $("fio").value = S.fio;
+  $("amount").value = fmtIn(S.amount);
+  $("issue").value = S.issue;
+  $("term").value = S.term;
+  $("payDay").value = S.payDay;
+  $("rate").value = fmtRate(S.rate);
+  setRadio("termUnit", S.termUnit); setRadio("rateUnit", S.rateUnit); setRadio("basis", S.basis);
+  setRadio("method", S.method); setRadio("rounding", S.rounding); setRadio("annMode", S.annMode); setRadio("prinMode", S.prinMode); setRadio("intMode", S.intMode);
+}
+
+function readForm(e){
+  var prevIssue = S.issue;
+  S.fio = $("fio").value.trim();
+  S.amount = parseNum($("amount").value);
+  S.issue = $("issue").value;
+  S.term = parseInt($("term").value, 10);
+  S.termUnit = radio("termUnit");
+  if(e && e.target && e.target.id === "payDay") S.payDayTouched = true;
+  if(!S.payDayTouched && S.issue !== prevIssue && parseDate(S.issue) !== null){
+    S.payDay = Number(S.issue.slice(8,10));
+    $("payDay").value = S.payDay;
+  } else {
+    S.payDay = parseInt($("payDay").value, 10);
+  }
+  S.rate = parseNum($("rate").value);
+  S.rateUnit = radio("rateUnit");
+  S.basis = radio("basis");
+  S.rounding = radio("rounding");
+  S.annMode = radio("annMode");
+  var prevPrin = S.prinMode, prevInt = S.intMode;
+  S.method = radio("method");
+  S.prinMode = radio("prinMode");
+  S.intMode = radio("intMode");
+  if(S.method === "diff" && ((S.prinMode !== prevPrin && (S.prinMode === "sel" || S.prinMode === "manual")) || (S.intMode !== prevInt && S.intMode === "sel"))){
+    $("periods").open = true;
+  }
+}
+
+/* ---------- расчёт ---------- */
+function baseDates(D0){
+  var out = [], pd = S.payDay;
+  if(S.termUnit === "m"){
+    for(var k = 1; k <= S.term; k++) out.push(addMonths(D0, k, pd));
+  } else {
+    var end = D0 + S.term * DAY;
+    for(var j = 1; j < 400; j++){
+      var t = addMonths(D0, j, pd);
+      if(t >= end) break;
+      out.push(t);
+    }
+    out.push(end);
+  }
+  return out;
+}
+
+function denomOf(b){ return b === "act365" ? 365 : 360; }
+function annualOf(){
+  var r = S.rate / 100, den = denomOf(S.basis);
+  if(S.rateUnit === "y") return r;
+  if(S.rateUnit === "m") return r * 12;
+  return r * den;
+}
+
+function compute(){
+  var errs = [];
+  var D0 = parseDate(S.issue);
+  var P = S.amount;
+  if(!(P > 0)) errs.push("Укажите сумму выдачи больше нуля.");
+  if(D0 === null) errs.push("Укажите дату выдачи.");
+  if(!(S.term >= 1)) errs.push("Срок должен быть не меньше 1.");
+  if(S.termUnit === "m" && S.term > 360) errs.push("Срок не может превышать 360 месяцев.");
+  if(S.termUnit === "d" && S.term > 10950) errs.push("Срок не может превышать 10 950 дней.");
+  if(!(S.payDay >= 1 && S.payDay <= 31)) errs.push("Число погашения должно быть от 1 до 31.");
+  if(!(S.rate >= 0)) errs.push("Укажите процентную ставку (0 или больше).");
+  if(errs.length) return {errs:errs};
+
+  var base = baseDates(D0);
+  var n = base.length;
+  var dates = base.map(function(ms, i){
+    var ov = S.dateOv[i];
+    if(ov){ var p = parseDate(ov); if(p !== null) return p; }
+    return ms;
+  });
+  var prev = D0;
+  for(var i = 0; i < n; i++){
+    if(dates[i] <= prev){
+      errs.push("Дата платежа №" + (i+1) + " (" + fmtDate(dates[i]) + ") должна быть позже " + (i === 0 ? "даты выдачи" : "даты платежа №" + i) + ".");
+    }
+    prev = dates[i];
+  }
+  if(errs.length) return {errs:errs, n:n, base:base, dates:dates};
+
+  var den = denomOf(S.basis), annual = annualOf();
+  var days = [], f = [];
+  prev = D0;
+  for(i = 0; i < n; i++){
+    var d = S.basis === "30360" ? days30(prev, dates[i]) : daysAct(prev, dates[i]);
+    days.push(d); f.push(annual * d / den); prev = dates[i];
+  }
+
+  var ibso = S.rounding === "ibso";
+  var RI = ibso ? function(x){ return Math.ceil(x - 1e-7); } : r2;
+  var RP = ibso ? function(x){ return Math.round(x); } : r2;
+  var FL = ibso ? function(x){ return Math.floor(x + 1e-9); } : function(x){ return Math.floor(x * 100 + 1e-7) / 100; };
+  var rows = [];
+  var B, I, p, payment = null;
+
+  /* фиксированные платежи, которые пользователь вписал вручную */
+  var fixed = {}, hasFixed = false;
+  for(i = 0; i < n-1; i++){
+    var fv = parseNum(S.payFix[i]);
+    if(isFinite(fv) && fv !== 0){
+      if(fv < 0){ errs.push("Сумма платежа в периоде №" + (i+1) + " не может быть отрицательной."); continue; }
+      fixed[i] = r2(fv); hasFixed = true;
+    }
+  }
+  if(errs.length) return {errs:errs, n:n, base:base, dates:dates};
+
+  /* платёж зафиксирован: сначала проценты, остаток в ОД */
+  function applyFixed(pay, due, bal){
+    if(pay >= due) return {pI:due, p:Math.min(bal, r2(pay - due)), carry:0};
+    return {pI:pay, p:0, carry:r2(due - pay)};
+  }
+  function annFormula(bal, periods){
+    var im = annual / 12;
+    if(periods <= 0) return bal;
+    return im > 0 ? bal * im / (1 - Math.pow(1 + im, -periods)) : bal / periods;
+  }
+
+  if(S.method === "ann"){
+    /* run(A, raw): расчёт строк при равном платеже A для нефиксированных месяцев */
+    var run = function(A, raw, recalc){
+      var RIx = raw ? function(x){ return x; } : RI;
+      var rr = [], b = P, carry = 0, curA = A;
+      for(var k = 0; k < n; k++){
+        var due = RIx(carry + b * f[k]);
+        var pI, pk;
+        if(k === n-1){ pI = due; pk = b; carry = 0; }
+        else if(fixed[k] !== undefined){
+          var fx = applyFixed(fixed[k], due, b); pI = fx.pI; pk = fx.p; carry = fx.carry;
+        } else {
+          var rest = raw ? curA - due : r2(curA - due);
+          if(rest >= 0){ pI = due; pk = Math.min(b, rest); carry = 0; }
+          else { pI = curA; pk = 0; carry = raw ? due - curA : r2(due - curA); }
+        }
+        b = raw ? b - pk : r2(b - pk);
+        rr.push({date:dates[k], days:days[k], p:pk, i:pI, t:raw ? pk + pI : r2(pk + pI), b:b, fixed:fixed[k] !== undefined});
+        if(recalc && fixed[k] !== undefined && k < n-1){
+          curA = RP(annFormula(b, n - 1 - k));
+          payment = curA;
+        }
+      }
+      return rr;
+    };
+    if(S.annMode === "ibso"){
+      payment = RP(annFormula(P, n));
+      rows = run(payment, false, true);
+    } else {
+      var lastGap = function(A){ var rr = run(A, true, false); var L = rr[n-1]; return L.t - A; };
+      var sumF = f.reduce(function(a,b){ return a + b; }, 0);
+      var lo = 0, hi = P * (1 + sumF) + 1;
+      for(var it = 0; it < 200; it++){
+        var mid = (lo + hi) / 2;
+        if(lastGap(mid) > 0) lo = mid; else hi = mid;
+      }
+      payment = RP((lo + hi) / 2);
+      rows = run(payment, false, false);
+    }
+  } else {
+    var manual = new Array(n).fill(0);
+    if(S.prinMode === "manual"){
+      var sumM = 0;
+      for(i = 0; i < n-1; i++){
+        var v = parseNum(S.prinAmt[i]);
+        if(isFinite(v) && v !== 0){
+          if(v < 0){ errs.push("Сумма ОД в периоде №" + (i+1) + " не может быть отрицательной."); v = 0; }
+          manual[i] = r2(v); sumM = r2(sumM + manual[i]);
+        }
+      }
+      if(sumM > P + 0.004) errs.push("Сумма ОД по периодам (" + fmt(sumM) + " ₸) больше суммы выдачи (" + fmt(P) + " ₸). Уменьшите суммы.");
+    }
+    if(errs.length) return {errs:errs, n:n, base:base, dates:dates};
+
+    var payInt = function(k){
+      if(k === n-1) return true;
+      if(S.intMode === "monthly") return true;
+      if(S.intMode === "end") return false;
+      return !!S.intSel[k];
+    };
+    var isSel = function(k){ return k === n-1 || !!S.prinSel[k]; };
+    /* проценты копятся без округления и округляются один раз — в месяц оплаты */
+    B = P; var carry = 0;
+    for(i = 0; i < n; i++){
+      carry = carry + B * f[i];
+      var pi = 0;
+      if(fixed[i] !== undefined){
+        var fx = applyFixed(fixed[i], RI(carry), B); pi = fx.pI; p = fx.p; carry = fx.carry;
+      } else {
+        if(payInt(i)){ pi = RI(carry); carry = 0; }
+        if(i === n-1) p = B;
+        else if(S.prinMode === "equal"){
+          var rem = 0; for(var j = i; j < n; j++) if(fixed[j] === undefined) rem++;
+          p = Math.min(B, FL(B / rem));
+        } else if(S.prinMode === "end"){
+          p = 0;
+        } else if(S.prinMode === "sel"){
+          if(isSel(i)){
+            var remS = 0; for(var j2 = i; j2 < n; j2++) if(fixed[j2] === undefined && isSel(j2)) remS++;
+            p = Math.min(B, FL(B / remS));
+          } else p = 0;
+        } else {
+          p = Math.min(B, manual[i]);
+        }
+      }
+      B = r2(B - p);
+      rows.push({date:dates[i], days:days[i], p:p, i:pi, t:r2(p + pi), b:B, fixed:fixed[i] !== undefined});
+    }
+  }
+
+  /* месяцы без платежа не показываем: их дни переходят в ближайший платёж (как в ИБСО) */
+  var shown = [], accD = 0;
+  rows.forEach(function(r, k){
+    accD += r.days;
+    if(r.t !== 0 || k === rows.length - 1){ r.days = accD; accD = 0; shown.push(r); }
+  });
+  rows = shown;
+
+  var sumP = 0, sumI = 0, sumT = 0, maxT = 0;
+  rows.forEach(function(r){ sumP = r2(sumP + r.p); sumI = r2(sumI + r.i); sumT = r2(sumT + r.t); if(r.t > maxT) maxT = r.t; });
+
+  var gesv = null;
+  if(sumT > P){
+    var g = function(x){ var s = -P; rows.forEach(function(r){ s += r.t / Math.pow(1 + x, daysAct(D0, r.date) / den); }); return s; };
+    var gl = 0, gh = 1;
+    while(g(gh) > 0 && gh < 1e6) gh *= 2;
+    for(var q = 0; q < 200; q++){ var gm = (gl + gh) / 2; if(g(gm) > 0) gl = gm; else gh = gm; }
+    gesv = (gl + gh) / 2;
+  }
+
+  return {errs:[], n:n, base:base, dates:dates, rows:rows, D0:D0, P:P, sumP:sumP, sumI:sumI, sumT:sumT, maxT:maxT, payment:payment, gesv:gesv, annual:annual, den:den};
+}
+
+/* ---------- подписи ---------- */
+var BASIS_NAME = {act365:"факт/365", act360:"факт/360", "30360":"30/360"};
+var RATE_UNIT = {y:"% годовых", m:"% в месяц", d:"% в день"};
+function methodText(){
+  if(S.method === "ann") return "Аннуитет";
+  var pm = {equal:"ОД равными долями", end:"ОД в конце срока", sel:"ОД в выбранные месяцы", manual:"ОД по своим суммам"}[S.prinMode];
+  var im = {monthly:"проценты ежемесячно", end:"проценты в конце срока", sel:"проценты в выбранные месяцы"}[S.intMode];
+  return "Дифференцированный: " + pm + ", " + im;
+}
+function termText(){
+  return S.term + " " + (S.termUnit === "m" ? plural(S.term, "месяц", "месяца", "месяцев") : plural(S.term, "день", "дня", "дней"));
+}
+
+function renderHints(){
+  var den = denomOf(S.basis);
+  if(S.rate >= 0){
+    var a = annualOf() * 100;
+    $("rateHint").textContent = "Это " + fmtPct(a, 2) + " % в год · " + fmtPct(a / 12, 4) + " % в месяц · " + fmtPct(a / den, 4) + " % в день (при базе " + BASIS_NAME[S.basis] + ")";
+  } else $("rateHint").textContent = "";
+  $("basisHint").textContent = {
+    act365:"Дни периода считаются по календарю, в году 365 дней.",
+    act360:"Дни периода считаются по календарю, в году 360 дней.",
+    "30360":"Каждый полный месяц считается как 30 дней, в году 360 дней."
+  }[S.basis];
+  $("methodHint").textContent = S.method === "ann"
+    ? "Равные ежемесячные платежи. Последний платёж корректируется на остаток."
+    : "ОД и проценты гасятся по отдельности. Проценты начисляются на остаток ОД за фактические дни периода.";
+  $("diffBox").hidden = S.method !== "diff";
+  $("annBox").hidden = S.method !== "ann";
+  $("annHint").textContent = S.annMode === "ibso"
+    ? "Платёж по формуле аннуитета с месячной ставкой (годовая / 12), проценты каждого месяца по фактическим дням. Последний платёж закрывает остаток."
+    : "Равный платёж подбирается точно под фактические дни каждого месяца.";
+  $("roundHint").textContent = S.rounding === "ibso"
+    ? "Проценты округляются вверх до целого тенге, платёж до целого тенге."
+    : "Все суммы округляются до тиынов.";
+  var nt = $("roundNote");
+  if(nt) nt.textContent = S.rounding === "ibso"
+    ? "Проценты округляются вверх до целого тенге, аннуитетный платёж до целого тенге; последний платёж закрывает остаток."
+    : "Суммы округляются до тиынов в каждом периоде, округление закрывается последним платежом.";
+  var dh = "";
+  if(S.method === "diff"){
+    if(S.prinMode === "sel") dh += "Отметьте месяцы гашения ОД в блоке «Даты и суммы по периодам» ниже: долг делится поровну между ними и последним платежом. ";
+    if(S.prinMode === "manual") dh += "Впишите суммы ОД по месяцам ниже. Остаток автоматически встанет в последний платёж. ";
+    if(S.intMode === "sel") dh += "Отметьте месяцы оплаты процентов ниже. Неоплаченные проценты переносятся на ближайший отмеченный месяц.";
+    if(S.intMode === "end") dh += "Все начисленные проценты оплачиваются последним платежом.";
+  }
+  $("diffHint").textContent = dh;
+  $("diffHint").hidden = dh === "";
+}
+
+var WEEKDAY = ["воскресенье","понедельник","вторник","среда","четверг","пятница","суббота"];
+function renderDue(res){
+  var box = $("termDue");
+  var D0 = parseDate(S.issue);
+  if(D0 === null || !(S.term >= 1) || !res.dates || !res.dates.length){ box.hidden = true; return; }
+  var last = res.dates[res.dates.length - 1];
+  var wd = new Date(last).getUTCDay();
+  var html = "Дата погашения: <b>" + fmtDate(last) + "</b><span>" + WEEKDAY[wd] + (wd === 0 || wd === 6 ? ", выходной" : "") + " · " + daysAct(D0, last) + " " + plural(daysAct(D0, last), "день", "дня", "дней") + " от выдачи</span>";
+  box.innerHTML = html;
+  box.hidden = false;
+}
+
+/* ---------- блок периодов ---------- */
+function renderPanel(res){
+  var n = res.n || 0;
+  var showSel = S.method === "diff" && S.prinMode === "sel";
+  var showAmt = S.method === "diff" && S.prinMode === "manual";
+  var showInt = S.method === "diff" && S.intMode === "sel";
+  var key = [n, S.method, S.prinMode, S.intMode, (res.base || []).join(",")].join("|");
+  if(key !== lastPanelKey){
+    lastPanelKey = key;
+    var h = '<thead><tr><th>№</th><th>Дата платежа</th><th>Сумма платежа, ₸</th>';
+    if(showSel) h += '<th>Гасить ОД</th>';
+    if(showAmt) h += '<th>Сумма ОД, ₸</th>';
+    if(showInt) h += '<th>Платить %</th>';
+    h += '</tr></thead><tbody>';
+    for(var i = 0; i < n; i++){
+      var last = i === n-1;
+      var val = S.dateOv[i] || iso(res.base[i]);
+      h += '<tr><td class="n">' + (i+1) + '</td>';
+      h += '<td><input type="date" id="pd-' + i + '" value="' + val + '" aria-label="Дата платежа ' + (i+1) + '"></td>';
+      if(last) h += '<td><span class="auto" id="pf-last"></span></td>';
+      else h += '<td><input type="text" class="num" inputmode="decimal" id="pf-' + i + '" value="' + (S.payFix[i] ? fmtIn(parseNum(S.payFix[i])) : "") + '" placeholder="авто" aria-label="Сумма платежа ' + (i+1) + '"></td>';
+      if(showSel) h += '<td><input type="checkbox" id="ps-' + i + '"' + (last || S.prinSel[i] ? " checked" : "") + (last ? " disabled" : "") + ' aria-label="Гасить ОД в платеже ' + (i+1) + '"></td>';
+      if(showAmt){
+        if(last) h += '<td><span class="auto" id="pa-last"></span></td>';
+        else h += '<td><input type="text" class="num" inputmode="decimal" id="pa-' + i + '" value="' + (S.prinAmt[i] ? fmtIn(parseNum(S.prinAmt[i])) : "") + '" placeholder="0" aria-label="Сумма ОД в платеже ' + (i+1) + '"></td>';
+      }
+      if(showInt) h += '<td><input type="checkbox" id="is-' + i + '"' + (last || S.intSel[i] ? " checked" : "") + (last ? " disabled" : "") + ' aria-label="Платить проценты в платеже ' + (i+1) + '"></td>';
+      h += '</tr>';
+    }
+    h += '</tbody>';
+    $("ptable").innerHTML = h;
+  }
+  for(var j = 0; j < n; j++){
+    var el = $("pd-" + j);
+    if(el) el.classList.toggle("changed", !!S.dateOv[j]);
+  }
+  for(var j3 = 0; j3 < n-1; j3++){
+    var pfe = $("pf-" + j3);
+    if(pfe) pfe.classList.toggle("changed", !!S.payFix[j3]);
+  }
+  var pfl = $("pf-last");
+  if(pfl) pfl.textContent = res.rows ? "авто: " + fmt(res.rows[res.rows.length-1].t) : "—";
+  var pl = $("pa-last");
+  if(pl){
+    if(res.rows) pl.textContent = "остаток " + fmt(res.rows[res.rows.length-1].p);
+    else pl.textContent = "—";
+  }
+  var ph = [];
+  ph.push("Даты по умолчанию: каждое " + S.payDay + "-е число" + (S.termUnit === "d" ? ", последний платёж в конце срока" : "") + ".");
+  if(Object.keys(S.dateOv).length) ph.push("Изменённые даты подсвечены.");
+  ph.push("«Сумма платежа»: впишите, сколько клиент платит в этот месяц. Сначала гасятся проценты, остаток идёт в ОД, остальные месяцы пересчитываются автоматически. Пустое поле означает расчёт по условиям.");
+  if(showAmt) ph.push("В «Сумма ОД» пустые поля означают 0.");
+  $("periodsHint").textContent = ph.join(" ");
+  var nFix = Object.keys(S.payFix).length;
+  $("periodsSub").textContent = n + " " + plural(n, "платёж", "платежа", "платежей") + (nFix ? " · задано платежей: " + nFix : "") + (Object.keys(S.dateOv).length ? " · изменено дат: " + Object.keys(S.dateOv).length : "") + (showAmt ? " · свои суммы ОД" : "") + (showSel ? " · выбор месяцев ОД" : "") + (showInt ? " · выбор месяцев %" : "");
+}
+
+/* ---------- график ---------- */
+function tile(k, v, cls){ return '<div class="tile' + (cls ? " " + cls : "") + '"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>'; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+function renderResult(res){
+  var errBox = $("errors");
+  if(res.errs.length){
+    errBox.innerHTML = "Проверьте условия:<ul>" + res.errs.map(function(e){ return "<li>" + esc(e) + "</li>"; }).join("") + "</ul>";
+    errBox.hidden = false;
+    $("tiles").innerHTML = "";
+    $("sched").hidden = true;
+    return;
+  }
+  errBox.hidden = true;
+  $("sched").hidden = false;
+
+  var anyFixed = res.rows.some(function(r){ return r.fixed; });
+  var payTile = S.method === "ann"
+    ? tile(anyFixed ? "Платёж в остальные месяцы" : "Ежемесячный платёж", fmt(res.payment) + " ₸", "hl")
+    : tile("Максимальный платёж", fmt(res.maxT) + " ₸", "hl");
+  $("tiles").innerHTML =
+    payTile +
+    tile("Сумма займа", fmt(res.P) + " ₸") +
+    tile("Проценты за весь срок", fmt(res.sumI) + " ₸", "int") +
+    tile("Всего к возврату", fmt(res.sumT) + " ₸") +
+    tile("ГЭСВ (без комиссий)" + (res.gesv !== null && res.gesv * 100 > 46 ? " — выше 46%" : ""), res.gesv === null ? "—" : fmtPct(res.gesv * 100, 6) + " %", res.gesv !== null && res.gesv * 100 > 46 ? "warn" : "");
+
+  $("schedTitle").textContent = S.fio ? "График погашения: " + S.fio : "График погашения";
+  var lastDate = res.rows[res.rows.length - 1].date;
+  $("cond").textContent = "Выдача " + fmtDate(res.D0) + " · последний платёж " + fmtDate(lastDate) + " · " + res.rows.length + " " + plural(res.rows.length, "платёж", "платежа", "платежей");
+  $("chips").innerHTML = [methodText(), fmtRate(S.rate) + " " + RATE_UNIT[S.rateUnit], BASIS_NAME[S.basis], "срок " + termText()]
+    .map(function(c){ return '<span class="chip">' + esc(c) + '</span>'; }).join("");
+
+  var h = '<thead><tr><th>Дата</th><th>Дней</th><th>Погашение ОД</th><th>Погашение %</th><th>Сумма платежа</th><th>Остаток задолженности</th></tr></thead><tbody>';
+  h += '<tr class="issue"><td class="date"><small>выдача</small>' + fmtDate(res.D0) + '</td><td class="days"></td><td></td><td></td><td></td><td class="bal">' + fmt(res.P) + '</td></tr>';
+  res.rows.forEach(function(r){
+    h += '<tr><td class="date">' + fmtDate(r.date) + (r.fixed ? ' <span class="tag">задан</span>' : '') + '</td><td class="days">' + r.days + '</td>' +
+      '<td class="' + (r.p === 0 ? "zero" : "") + '">' + fmt(r.p) + '</td>' +
+      '<td class="pi' + (r.i === 0 ? " zero" : "") + '">' + fmt(r.i) + '</td>' +
+      '<td class="tot' + (r.t === 0 ? " zero" : "") + '">' + fmt(r.t) + '</td>' +
+      '<td class="bal">' + fmt(r.b) + '</td></tr>';
+  });
+  h += '</tbody><tfoot><tr><td>Итого</td><td class="days">' + res.rows.reduce(function(a,r){ return a + r.days; }, 0) + '</td><td>' + fmt(res.sumP) + '</td><td class="pi">' + fmt(res.sumI) + '</td><td>' + fmt(res.sumT) + '</td><td></td></tr></tfoot>';
+  $("grid").innerHTML = h;
+}
+
+function update(e){
+  if(e) readForm(e);
+  var struct = [S.issue, S.term, S.termUnit, S.payDay].join("|");
+  if(struct !== lastStruct){ S.dateOv = {}; lastStruct = struct; }
+  var res = compute();
+  if(res.n !== undefined && res.n !== lastN){
+    if(lastN !== -1){ S.payFix = {}; S.prinSel = {}; S.prinAmt = {}; S.intSel = {}; }
+    lastN = res.n;
+  }
+  current = res;
+  renderDue(res);
+  renderHints();
+  renderPanel(res);
+  renderResult(res);
+}
+
+/* ---------- события ---------- */
+form.addEventListener("input", update);
+form.addEventListener("change", update);
+form.addEventListener("submit", function(e){ e.preventDefault(); });
+$("amount").addEventListener("blur", function(){
+  var v = parseNum(this.value);
+  if(isFinite(v)) this.value = fmtIn(v);
+});
+$("rate").addEventListener("blur", function(){
+  var v = parseNum(this.value);
+  if(isFinite(v)) this.value = fmtRate(v);
+});
+
+$("ptable").addEventListener("input", onPanel);
+$("ptable").addEventListener("change", onPanel);
+function onPanel(e){
+  var t = e.target, id = t.id || "";
+  var i = parseInt(id.split("-")[1], 10);
+  if(id.indexOf("pd-") === 0){
+    var baseIso = current && current.base ? iso(current.base[i]) : "";
+    if(t.value && t.value !== baseIso) S.dateOv[i] = t.value; else { delete S.dateOv[i]; if(!t.value && baseIso) t.value = baseIso; }
+  } else if(id.indexOf("ps-") === 0){
+    if(t.checked) S.prinSel[i] = true; else delete S.prinSel[i];
+  } else if(id.indexOf("is-") === 0){
+    if(t.checked) S.intSel[i] = true; else delete S.intSel[i];
+  } else if(id.indexOf("pf-") === 0){
+    if(e.type === "change"){ var vf = parseNum(t.value); if(isFinite(vf)) t.value = fmtIn(vf); }
+    if(t.value.trim()) S.payFix[i] = t.value; else delete S.payFix[i];
+  } else if(id.indexOf("pa-") === 0){
+    if(e.type === "change"){ var v = parseNum(t.value); if(isFinite(v)) t.value = fmtIn(v); }
+    if(t.value.trim()) S.prinAmt[i] = t.value; else delete S.prinAmt[i];
+  } else return;
+  var res = compute();
+  current = res;
+  renderPanel(res);
+  renderResult(res);
+}
+
+$("btnResetDates").addEventListener("click", function(){
+  S.dateOv = {};
+  lastPanelKey = "";
+  update();
+  toast("Даты возвращены по умолчанию");
+});
+$("btnReset").addEventListener("click", function(){
+  S = freshState();
+  lastStruct = ""; lastN = -1; lastPanelKey = "";
+  writeForm();
+  $("periods").open = false;
+  update();
+  toast("Условия сброшены");
+});
+
+/* ---------- экспорт ---------- */
+var toastTimer;
+function toast(msg){
+  var t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+}
+function safeName(){
+  var base = S.fio ? S.fio.replace(/[\\\/:*?"<>|]+/g, "").trim().replace(/\s+/g, "_") : "клиент";
+  return "График_" + base + "_" + (current && current.D0 ? fmtDate(current.D0) : "");
+}
+async function saveFile(filename, data, mime){
+  var inArtifact = !!(window.claude && typeof window.claude.use === "function");
+  if(inArtifact){
+    try{
+      var dl = await window.claude.use("downloads");
+      if(!dl){ toast("Скачивание недоступно в этом окне"); return; }
+      await dl.save({filename:filename, data:data});
+      toast("Файл сохранён: " + filename);
+    }catch(err){
+      var code = err && err.code;
+      if(code === "declined") toast("Сохранение отменено");
+      else if(code === "rate_limited") toast("Окно сохранения уже открыто");
+      else toast("Не удалось сохранить файл" + (err && err.message ? ": " + err.message : ""));
+    }
+    return;
+  }
+  var blob = data instanceof Blob ? data : new Blob([data], {type:mime});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast("Файл сохранён: " + filename);
+}
+function headerInfo(){
+  var r = current;
+  var info = [
+    ["ФИО клиента", S.fio || "—"],
+    ["Сумма займа, ₸", r.P],
+    ["Дата выдачи", fmtDate(r.D0)],
+    ["Срок", termText()],
+    ["Ставка", fmtRate(S.rate) + " " + RATE_UNIT[S.rateUnit]],
+    ["База начисления", BASIS_NAME[S.basis]],
+    ["Округление", S.rounding === "ibso" ? "до тенге (как в ИБСО)" : "до тиынов"],
+    ["Метод погашения", methodText()]
+  ];
+  if(S.method === "ann") info.push(["Ежемесячный платёж, ₸", r.payment]);
+  info.push(["Проценты за весь срок, ₸", r.sumI]);
+  info.push(["Всего к возврату, ₸", r.sumT]);
+  info.push(["ГЭСВ (без комиссий)", r.gesv === null ? "—" : fmtPct(r.gesv * 100, 6) + " %"]);
+  return info;
+}
+
+$("btnXlsx").addEventListener("click", function(){
+  if(!current || current.errs.length){ toast("Сначала исправьте условия"); return; }
+  if(typeof XLSX === "undefined"){ toast("Модуль Excel не загрузился. Проверьте интернет и обновите страницу"); return; }
+  var r = current;
+  var aoa = [["График погашения займа"], []];
+  headerInfo().forEach(function(x){ aoa.push(x); });
+  aoa.push([]);
+  var headRow = aoa.length;
+  aoa.push(["Дата", "Дней", "Погашение ОД", "Погашение %", "Сумма платежа", "Остаток задолженности"]);
+  aoa.push([fmtDate(r.D0) + " (выдача)", "", "", "", "", r.P]);
+  r.rows.forEach(function(x){ aoa.push([fmtDate(x.date), x.days, x.p, x.i, x.t, x.b]); });
+  aoa.push(["Итого", r.rows.reduce(function(a,x){ return a + x.days; }, 0), r.sumP, r.sumI, r.sumT, ""]);
+  var ws = XLSX.utils.aoa_to_sheet(aoa);
+  var range = XLSX.utils.decode_range(ws["!ref"]);
+  for(var R = 0; R <= range.e.r; R++){
+    for(var C = 0; C <= range.e.c; C++){
+      var cell = ws[XLSX.utils.encode_cell({r:R, c:C})];
+      if(cell && cell.t === "n" && !(R > headRow && C === 1)) cell.z = "#,##0.00";
+    }
+  }
+  ws["!cols"] = [{wch:26}, {wch:8}, {wch:18}, {wch:18}, {wch:18}, {wch:24}];
+  ws["!merges"] = [{s:{r:0, c:0}, e:{r:0, c:5}}];
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "График");
+  var buf = XLSX.write(wb, {bookType:"xlsx", type:"array"});
+  saveFile(safeName() + ".xlsx", new Blob([buf], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+});
+
+$("btnPrint").addEventListener("click", function(){
+  if(!current || current.errs.length){ toast("Сначала исправьте условия"); return; }
+  var r = current;
+  var info = headerInfo().map(function(x){
+    var v = typeof x[1] === "number" ? fmt(x[1]) : esc(x[1]);
+    return "<tr><th>" + esc(x[0]) + "</th><td>" + v + "</td></tr>";
+  }).join("");
+  var rows = '<tr><td>' + fmtDate(r.D0) + ' (выдача)</td><td></td><td></td><td></td><td></td><td>' + fmt(r.P) + '</td></tr>' +
+    r.rows.map(function(x){ return "<tr><td>" + fmtDate(x.date) + "</td><td>" + x.days + "</td><td>" + fmt(x.p) + "</td><td>" + fmt(x.i) + "</td><td>" + fmt(x.t) + "</td><td>" + fmt(x.b) + "</td></tr>"; }).join("");
+  var doc = '<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>' + esc(safeName()) + '</title><style>' +
+    'body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:24px;font-size:12px}' +
+    'h1{font-size:18px;margin:0 0 12px}table{border-collapse:collapse}' +
+    '.info th{text-align:left;font-weight:normal;color:#555;padding:2px 16px 2px 0}.info td{padding:2px 0;font-weight:bold}' +
+    '.g{width:100%;margin-top:16px}.g th,.g td{border:1px solid #999;padding:5px 8px;text-align:right}' +
+    '.g th{background:#eee}.g td:first-child,.g th:first-child{text-align:left}.g tfoot td{font-weight:bold;background:#f3f3f3}' +
+    '.sign{margin-top:36px;display:flex;gap:60px}.sign div{flex:1;border-top:1px solid #111;padding-top:4px;color:#555}' +
+    'p.n{color:#666;font-size:10.5px;margin-top:12px}@media print{body{margin:10mm}}</style></head><body>' +
+    '<h1>График погашения займа</h1><table class="info">' + info + '</table>' +
+    '<table class="g"><thead><tr><th>Дата</th><th>Дней</th><th>Погашение ОД</th><th>Погашение %</th><th>Сумма платежа</th><th>Остаток задолженности</th></tr></thead><tbody>' + rows +
+    '</tbody><tfoot><tr><td>Итого</td><td>' + r.rows.reduce(function(a,x){ return a + x.days; }, 0) + '</td><td>' + fmt(r.sumP) + '</td><td>' + fmt(r.sumI) + '</td><td>' + fmt(r.sumT) + '</td><td></td></tr></tfoot></table>' +
+    '<p class="n">Расчёт носит информационный характер. ГЭСВ рассчитан без учёта комиссий и иных платежей клиента.</p>' +
+    '<div class="sign"><div>Клиент</div><div>Представитель МФО</div></div>' +
+    '</body></html>';
+  saveFile(safeName() + ".html", doc, "text/html");
+});
+
+$("btnCopy").addEventListener("click", function(){
+  if(!current || current.errs.length){ toast("Сначала исправьте условия"); return; }
+  var r = current;
+  var num = function(x){ return x.toFixed(2).replace(".", ","); };
+  var lines = ["Дата\tДней\tПогашение ОД\tПогашение %\tСумма платежа\tОстаток задолженности"];
+  lines.push(fmtDate(r.D0) + " (выдача)\t\t\t\t\t" + num(r.P));
+  r.rows.forEach(function(x){ lines.push([fmtDate(x.date), x.days, num(x.p), num(x.i), num(x.t), num(x.b)].join("\t")); });
+  lines.push(["Итого", r.rows.reduce(function(a,x){ return a + x.days; }, 0), num(r.sumP), num(r.sumI), num(r.sumT), ""].join("\t"));
+  var text = lines.join("\n");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ toast("Таблица скопирована. Вставьте в Excel через Ctrl+V"); }, function(){ fallbackCopy(text); });
+  } else fallbackCopy(text);
+});
+function fallbackCopy(text){
+  var ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  var ok = false;
+  try{ ok = document.execCommand("copy"); }catch(e){ ok = false; }
+  ta.remove();
+  toast(ok ? "Таблица скопирована. Вставьте в Excel через Ctrl+V" : "Не удалось скопировать. Выделите таблицу мышью и нажмите Ctrl+C");
+}
+
+/* ---------- старт ---------- */
+S = freshState();
+writeForm();
+update();
+})();
+</script>
+
+</body>
+</html>
