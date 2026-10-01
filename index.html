@@ -1332,6 +1332,9 @@ function freshState(){
 var GESV_MAX = 46; /* предельное значение ГЭСВ, % — выше подсвечивается красным */
 /* дата начала нового графика: по умолчанию совпадает с датой ДС (датой обращения клиента) */
 function startDate(){ var st = parseDate(S.nStart); return st !== null ? st : parseDate(S.dsDate); }
+/* дата состояния счетов: дата ДС; если график начинается позже ДС — дата начала графика.
+   Фактические операции (выносы на просрочку, оплаты, пеня) учитываются по эту дату. */
+function balDate(){ var st = startDate(), ds = parseDate(S.dsDate); return ds !== null && st !== null && ds > st ? ds : st; }
 function RI(x){ return Math.ceil(x - 1e-7); }
 function RP(x){ return Math.round(x); }
 function FL(x){ return Math.floor(x + 1e-9); }
@@ -1512,9 +1515,14 @@ function parseFacts(aoa){
 }
 /* остатки на дату ДС по фактическим операциям */
 function factBalances(R){
-  var F = S.facts, sum = function(k){ return F.filter(function(o){ return o.k === k && o.d <= R; }).reduce(function(a, o){ return r2(a + o.a); }, 0); };
+  /* R — начало нового графика (до него считаются начисленные %), B — дата состояния счетов (дата ДС) */
+  var B = balDate(); if(B === null || B < R) B = R;
+  var F = S.facts, sum = function(k){ return F.filter(function(o){ return o.k === k && o.d <= B; }).reduce(function(a, o){ return r2(a + o.a); }, 0); };
+  /* начисления, относящиеся к периоду до начала нового графика (начисление с датой D покрывает дни до D−1);
+     проценты после начала графика входят в первый платёж нового графика */
+  var accrR = F.filter(function(o){ return o.k === "accr" && o.d <= R; }).reduce(function(a, o){ return r2(a + o.a); }, 0);
   var issued = sum("issue"), odTotal = r2(issued - sum("odPay") - sum("odPayOver")), odOver = r2(sum("odMove") - sum("odPayOver") - sum("odRestr"));
-  var prcOver = r2(sum("prcMove") - sum("prcPayOver") - sum("prcRestr")), prcAcc = r2(sum("accr") - sum("prcPay") - sum("prcMove"));
+  var prcOver = r2(sum("prcMove") - sum("prcPayOver") - sum("prcRestr")), prcAcc = r2(accrR - sum("prcPay") - sum("prcMove"));
   var lastAccr = null; F.forEach(function(o){ if(o.k === "accr" && o.d <= R && (lastAccr === null || o.d > lastAccr)) lastAccr = o.d; });
   if(lastAccr === null) lastAccr = parseDate(S.issue);
   /* проценты с последнего начисления до даты ДС — отрезками по каждому изменению остатка ОД */
@@ -1532,7 +1540,7 @@ function factBalances(R){
   /* ориентировочная пеня: 0,5% в день от суммы просрочки (ОД и %), со дня просрочки до оплаты или до даты ДС, минус уже оплаченная пеня */
   var pen = 0, buckets = {od:[], prc:[]};
   F.forEach(function(o){
-    if(o.d > R) return;
+    if(o.d > B) return;
     if(o.k === "odMove") buckets.od.push({due:o.due, left:o.a});
     if(o.k === "prcMove") buckets.prc.push({due:o.due, left:o.a});
     /* гашение просрочки или её реструктуризация закрывают просрочку (FIFO); пеня по реструктурированной части решалась в прошлом ДС и сюда не входит */
@@ -1541,7 +1549,7 @@ function factBalances(R){
       for(var j = 0; j < q.length && rest > 0.004; j++){ if(q[j].left <= 0) continue; var c = Math.min(q[j].left, rest); if(o.k === "odPayOver" || o.k === "prcPayOver") pen += c * 0.005 * Math.max(0, daysAct(q[j].due, o.d)); q[j].left = r2(q[j].left - c); rest = r2(rest - c); }
     }
   });
-  ["od", "prc"].forEach(function(t){ buckets[t].forEach(function(x){ if(x.left > 0) pen += x.left * 0.005 * Math.max(0, daysAct(x.due, R)); }); });
+  ["od", "prc"].forEach(function(t){ buckets[t].forEach(function(x){ if(x.left > 0) pen += x.left * 0.005 * Math.max(0, daysAct(x.due, B)); }); });
   pen = Math.max(0, r2(pen - sum("penPay")));
   return {odUrg:r2(odTotal - odOver), odOver:odOver, prcOver:prcOver, prcCur:r2(Math.max(0, prcAcc) + (extra > 0 ? RI(extra) : 0)), pen:Math.round(pen), last:lastAccr, days:lastAccr !== null && R > lastAccr ? daysAct(lastAccr, R) : 0, segs:segs, fromFacts:true};
 }
@@ -1739,8 +1747,9 @@ function ibsoOps(R, pen){
   var add = function(name, a, known){ a = r2(a); if(a > 0) ops.push({d:R, name:name, a:a, known:known}); };
   add("Реструктуризация просрочки ОД в Срочный ОД", odOver, true);
   if(tp === "defer") add("Реструктуризация просрочки ПРЦ в Отложку", prcOver, true);
-  var defTotal = r2((tp === "defer" ? prcOver : 0) + (tc === "defer" ? prcCur : 0));
-  add("Учет отложенных ПРЦ", defTotal, true);
+  /* «Учет отложенных ПРЦ» — начисление текущих процентов сразу в отложенные (не перенос просрочки):
+     в ИБСО 65 000 000 × 37,9% × 31 / 360 = 2 121 347 */
+  if(tc === "defer") add("Учет отложенных ПРЦ", prcCur, true);
   if(tp === "cap") add("Просроченные % → капитализация в ОД", prcOver, false);
   if(tp === "waive") add("Просроченные % → прощение", prcOver, false);
   if(tc === "cap") add("Начисленные % → капитализация в ОД", prcCur, false);
@@ -1763,7 +1772,7 @@ function gesv(withNew, res){
   var paid = [];
   if(withNew && S.facts && S.facts.length){
     /* по факту: реальные платежи клиента по ОД и процентам до даты ДС (пени не входят) */
-    S.facts.forEach(function(o){ if(o.d <= R && (o.k === "odPay" || o.k === "odPayOver" || o.k === "prcPay" || o.k === "prcPayOver")) paid.push({d:o.d, a:o.a}); });
+    var Bd = balDate(); S.facts.forEach(function(o){ if(o.d <= Bd && (o.k === "odPay" || o.k === "odPayOver" || o.k === "prcPay" || o.k === "prcPayOver")) paid.push({d:o.d, a:o.a}); });
   } else
   S.rows.forEach(function(r){ var d = parseDate(r.date); if(d === null) return; if(!withNew || (R !== null && d <= R && paidOf(r, R))) paid.push({d:d, a:r.od + r.prc}); });
   if(withNew && res){
