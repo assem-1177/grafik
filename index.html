@@ -1540,6 +1540,13 @@ function factBalances(R){
   var prcOver = r2(sum("prcMove") - sum("prcPayOver") - sum("prcRestr")), prcAcc = r2(accrR - sum("prcPay") - sum("prcMove"));
   var lastAccr = null; F.forEach(function(o){ if(o.k === "accr" && o.d <= R && (lastAccr === null || o.d > lastAccr)) lastAccr = o.d; });
   if(lastAccr === null) lastAccr = parseDate(S.issue);
+  /* для подсказки: с какой даты не оплачены начисленные % — после последнего гашения / выноса процентов (по сроку «С dd/mm/yyyy»), иначе с даты выдачи */
+  var accFrom = null; F.forEach(function(o){ if((o.k === "prcPay" || o.k === "prcPayOver" || o.k === "prcMove") && o.d <= B && (accFrom === null || o.due > accFrom)) accFrom = o.due; });
+  if(accFrom === null){ F.forEach(function(o){ if(o.k === "issue" && (accFrom === null || o.d < accFrom)) accFrom = o.d; }); }
+  if(accFrom === null) accFrom = parseDate(S.issue);
+  /* дни показываем, только если неоплаченная сумма ровно равна начислениям ИБСО с этой даты (не было частичных оплат) */
+  var accSince = accFrom === null ? NaN : F.filter(function(o){ return o.k === "accr" && o.d > accFrom && o.d <= R; }).reduce(function(a, o){ return r2(a + o.a); }, 0);
+  var accDays = accFrom !== null && lastAccr !== null && lastAccr > accFrom && Math.abs(accSince - Math.max(0, prcAcc)) < 1 ? daysAct(accFrom, lastAccr) : 0;
   /* проценты с последнего начисления до даты ДС — отрезками по каждому изменению остатка ОД */
   var extra = 0, segs = [];
   if(lastAccr !== null && R > lastAccr){
@@ -1567,6 +1574,7 @@ function factBalances(R){
   ["od", "prc"].forEach(function(t){ buckets[t].forEach(function(x){ if(x.left > 0) pen += x.left * 0.005 * Math.max(0, daysAct(x.due, B)); }); });
   pen = Math.max(0, r2(pen - sum("penPay") - sum("penCut")));
   return {odUrg:r2(odTotal - odOver), odOver:odOver, prcOver:prcOver, prcCur:r2(Math.max(0, prcAcc) + (extra > 0 ? RI(extra) : 0)), pen:Math.round(pen), last:lastAccr, days:lastAccr !== null && R > lastAccr ? daysAct(lastAccr, R) : 0, segs:segs, fromFacts:true,
+    accPart:Math.max(0, prcAcc), extraPart:extra > 0 ? RI(extra) : 0, accFrom:accDays ? accFrom : null, accDays:accDays,
     /* непогашенные просроченные % с их сроками оплаты — для ГЭСВ */
     prcDue:buckets.prc.filter(function(x){ return x.left > 0.004; }).map(function(x){ return {d:x.due, a:r2(x.left)}; })};
 }
@@ -1593,10 +1601,11 @@ function renderBal(){
     var man = S.bal[b.k] !== undefined, name = b.n;
     if(b.k === "prcCur" && autoB.after) name = "Доп. % (после финиша)";
     var tip = b.k === "prcCur" && autoB.days ? autoB.days + " дн. с " + fmtDate(autoB.last) : "";
+    if(b.k === "prcCur" && autoB.fromFacts && autoB.accPart > 0 && autoB.accDays) tip = (autoB.accDays + (autoB.days || 0)) + " дн. с " + fmtDate(autoB.accFrom);
     if(b.k === "pen" && autoB.fromFacts) tip = "0,5%/день, оценка";
     if(autoB.fromFacts && (b.k === "odUrg" || b.k === "odOver" || b.k === "prcOver")) tip = "по факту";
     return '<div class="f"><label for="b-' + b.k + '">' + name + (man ? '<button type="button" class="reset" data-reset="' + b.k + '">↺ авто</button>' : '<span>' + esc(tip) + '</span>') + '</label><input type="text" id="b-' + b.k + '" class="mono ' + (man ? "manual" : "auto") + '" inputmode="decimal" value="' + fmtIn(bv(b.k)) + '"></div>';
-  }).join("") + (autoB.segs && autoB.segs.length > 1 ? '<div class="f" style="grid-column:1/-1"><span class="hint">' + (autoB.after ? "Доп. %" : "Начисленные %") + ' по отрезкам: ' + autoB.segs.map(function(g){ return fmtDate(g.from) + "–" + fmtDate(g.to - DAY) + ": " + fmt(g.bal) + " × " + g.days + " дн."; }).join("; ") + '</span></div>' : '');
+  }).join("") + (autoB.fromFacts && autoB.accPart > 0 && S.bal.prcCur === undefined && !autoB.after ? '<div class="f" style="grid-column:1/-1"><span class="hint">Начисленные % ' + fmt(autoB.accPart + autoB.extraPart) + ' = ' + (autoB.accDays ? autoB.accDays + ' дн. — ' : '') + fmt(autoB.accPart) + ' начислено в ИБСО' + (autoB.accDays ? ' (' + fmtDate(autoB.accFrom) + '–' + fmtDate(autoB.last - DAY) + ')' : '') + (autoB.extraPart > 0 ? ' + ' + autoB.days + ' дн. — ' + fmt(autoB.extraPart) + ' доначислено с ' + fmtDate(autoB.last) + ' по ' + fmtDate(startDate() - DAY) : '') + '</span></div>' : '') + (autoB.segs && autoB.segs.length > 1 ? '<div class="f" style="grid-column:1/-1"><span class="hint">' + (autoB.after ? "Доп. %" : "Начисленные %") + ' по отрезкам: ' + autoB.segs.map(function(g){ return fmtDate(g.from) + "–" + fmtDate(g.to - DAY) + ": " + fmt(g.bal) + " × " + g.days + " дн."; }).join("; ") + '</span></div>' : '');
 }
 $("balForm").addEventListener("change", function(e){ var k = e.target.id.slice(2), v = parseNum(e.target.value); if(isFinite(v)) S.bal[k] = r2(v); else delete S.bal[k]; update(); });
 $("balForm").addEventListener("click", function(e){ var b = e.target.closest("[data-reset]"); if(b){ delete S.bal[b.dataset.reset]; update(); } });
