@@ -406,6 +406,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14p
     </div>
     <div class="card-body">
       <div class="form">
+        <div class="f"><label for="cDog">№ договора <span id="dogTag"></span></label><input type="text" id="cDog" class="mono"></div>
         <div class="f"><label for="cIssue">Дата выдачи</label><input type="date" id="cIssue"></div>
         <div class="f"><label for="cAmount">Сумма выдачи, ₸</label><input type="text" id="cAmount" class="mono" inputmode="decimal"></div>
         <div class="f"><label for="cRate">Ставка, % годовых <span id="rateTag"></span></label><input type="text" id="cRate" class="mono" inputmode="decimal"></div>
@@ -476,7 +477,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:14p
 
   <section class="card">
     <div class="card-head">
-      <h2>Новый график</h2>
+      <h2>Новый график<span id="dogHead" style="font-weight:500;color:var(--muted)"></span></h2>
       <div class="qa">
         <button type="button" class="btn" id="btnDates" hidden>Вернуть даты</button>
         <button type="button" class="btn primary" id="dBtnXlsx">Скачать Excel (все варианты)</button>
@@ -1326,7 +1327,7 @@ function parseTable(aoa){
 /* ================= состояние ================= */
 var S, lastRes = null, autoB = {};
 function freshState(){
-  return {facts:null, issue:"", amount:NaN, rate:37.9, rateAuto:false, basis:"act360", payDay:5, rows:[], source:"example",
+  return {facts:null, dogNum:"", dogAuto:false, issue:"", amount:NaN, rate:37.9, rateAuto:false, basis:"act360", payDay:5, rows:[], source:"example",
     dsDate:todayISO(), dsNum:"", nFinish:"", finTouched:false, nRate:NaN, nRateTouched:false, odMode:"ann", prcMode:"monthly", gN:0, nDay:NaN, target:"", nFirst:"", nStart:"",
     bal:{}, tPrc:"defer", tPrcDate:"", extra:[], tPrcCur:"defer", tPen:"waive", tDist:"equal",
     prcSel:{}, odAmt:{}, fixSum:{}, defSel:{}, defAmt:{}, dateOv:{}, key:"", variants:[], cur:0};
@@ -1394,7 +1395,12 @@ function applyParsed(info){
   if(inf){ S.rate = inf.rate; S.basis = inf.basis; S.rateAuto = true; } else S.rateAuto = false;
   S.source = "file"; S.bal = {}; S.prcSel = {}; S.odAmt = {}; S.fixSum = {}; S.defSel = {}; S.defAmt = {}; S.dateOv = {}; S.variants = []; S.cur = 0; S.gN = 0; S.nDay = S.payDay; S.target = ""; S.nFirst = ""; S.nStart = ""; S.prcMode = "monthly"; S.tPrc = "defer"; S.tPrcDate = ""; S.extra = []; S.tPrcCur = "defer"; S.tPen = "waive"; S.tDist = "equal"; S.finTouched = false; S.nRateTouched = false; S.dsDate = todayISO();
   writeForm(); update();
-  toast("Загружено платежей: " + S.rows.length + (inf ? " · ставка " + fmtRate(inf.rate) + "% определена по графику" : " · укажите ставку"));
+  toast("Загружено платежей: " + S.rows.length + (S.dogNum ? " · договор " + S.dogNum : "") + (inf ? " · ставка " + fmtRate(inf.rate) + "% определена по графику" : " · укажите ставку"));
+}
+/* номер договора: из текстов операций листа «факт» вида «по договору № NA-1192-08072026 от …» / «Договор NA-1192-08072026 от …» */
+var DOG_RE = /договор[ау]?\s*№?\s*([A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9\-\/.]*?)\s+от\s/i;
+function findDog(aoa, cnt){
+  aoa.forEach(function(r){ (r || []).forEach(function(c){ if(typeof c !== "string") return; var m = c.match(DOG_RE); if(m){ var k = m[1].toUpperCase(); cnt[k] = (cnt[k] || 0) + 1; } }); });
 }
 function readFile(file){
   if(typeof XLSX === "undefined"){ toast("Модуль Excel не загрузился. Проверьте интернет"); return; }
@@ -1403,16 +1409,20 @@ function readFile(file){
     try{
       var wb = XLSX.read(new Uint8Array(fr.result), {type:"array", cellDates:false});
       /* в файле может быть два листа: «план» (график) и «факт» (фактические операции ИБСО) */
-      var planInfo = null, facts = null, err0 = null;
+      var planInfo = null, facts = null, err0 = null, dogCnt = {};
       wb.SheetNames.forEach(function(nm){
         var aoa = XLSX.utils.sheet_to_json(wb.Sheets[nm], {header:1, raw:true, defval:""});
+        findDog(aoa, dogCnt);
         var f = parseFacts(aoa);
         if(f && !facts){ facts = f; return; }
         if(!planInfo){ try{ planInfo = parseTable(aoa); }catch(e){ err0 = e; } }
       });
       if(!planInfo) throw (err0 || new Error("Не нашла лист с графиком."));
       S.facts = facts;
+      var dogs = Object.keys(dogCnt).sort(function(a, b){ return dogCnt[b] - dogCnt[a]; });
+      S.dogNum = dogs.length ? dogs[0] : ""; S.dogAuto = dogs.length > 0;
       applyParsed(planInfo);
+      if(dogs.length > 1) toast("В файле несколько номеров договора: " + dogs.join(", ") + ". Взят " + dogs[0] + " — проверьте");
     }catch(err){ toast("Не удалось разобрать файл: " + err.message); }
   };
   fr.readAsArrayBuffer(file);
@@ -1425,6 +1435,7 @@ drop.addEventListener("drop", function(e){ var f = e.dataTransfer && e.dataTrans
 
 /* ================= форма ================= */
 function writeForm(){
+  $("cDog").value = S.dogNum || ""; $("dogTag").textContent = S.dogAuto ? "из файла" : "";
   $("cIssue").value = S.issue; $("cAmount").value = fmtIn(S.amount); $("cRate").value = fmtRate(S.rate);
   $("cBasis").value = S.basis; $("cDay").value = S.payDay; $("dsDate").value = S.dsDate; $("dsNum").value = S.dsNum;
   document.querySelector('input[name=odMode][value="' + S.odMode + '"]').checked = true;
@@ -1436,6 +1447,7 @@ function writeForm(){
 }
 function onForm(e){
   var id = e.target.id;
+  S.dogNum = $("cDog").value.trim(); if(id === "cDog"){ S.dogAuto = false; $("dogTag").textContent = ""; }
   S.issue = $("cIssue").value; S.amount = parseNum($("cAmount").value); S.rate = parseNum($("cRate").value);
   S.basis = $("cBasis").value; S.payDay = parseInt($("cDay").value, 10); S.dsDate = $("dsDate").value; S.dsNum = $("dsNum").value.trim();
   S.odMode = document.querySelector('input[name=odMode]:checked').value;
@@ -1454,7 +1466,7 @@ function onForm(e){
   if(id === "nRate"){ S.nRate = parseNum($("nRate").value); S.nRateTouched = $("nRate").value.trim() !== ""; }
   update();
 }
-["cIssue","cAmount","cRate","cBasis","cDay","dsDate","nStartDate","dsNum","nFinish","nRate","gN","nFirstDate","nDay","nTarget","tPrc","tPrcDate","tPrcCur","tPen"].forEach(function(id){ $(id).addEventListener("input", onForm); $(id).addEventListener("change", onForm); });
+["cDog","cIssue","cAmount","cRate","cBasis","cDay","dsDate","nStartDate","dsNum","nFinish","nRate","gN","nFirstDate","nDay","nTarget","tPrc","tPrcDate","tPrcCur","tPen"].forEach(function(id){ $(id).addEventListener("input", onForm); $(id).addEventListener("change", onForm); });
 document.querySelectorAll('input[name=odMode],input[name=prcMode],input[name=tDist]').forEach(function(el){ el.addEventListener("change", onForm); });
 ["cAmount"].forEach(function(id){ $(id).addEventListener("blur", function(){ var v = parseNum(this.value); if(isFinite(v)) this.value = fmtIn(v); }); });
 $("nTarget").addEventListener("blur", function(){ var v = parseNum(this.value); if(isFinite(v)) this.value = fmtIn(v); });
@@ -1979,6 +1991,7 @@ $("newTable").addEventListener("change", function(e){
 });
 
 function renderChips(){
+  $("dogHead").textContent = S.dogNum ? " · договор № " + S.dogNum : "";
   var src = S.source === "example" ? '<span class="chip ex">Пример — загрузите график из ИБСО</span>' : '<span class="chip ok">Загружено из ИБСО</span>';
   var fin = null; S.rows.forEach(function(r){ var d = parseDate(r.date); if(d !== null && (fin === null || d > fin)) fin = d; });
   if(S.facts && S.facts.length) src += '<span class="chip ok">Факт: ' + S.facts.length + ' операций</span>';
@@ -2014,7 +2027,8 @@ function update(){
 /* ================= выгрузки ================= */
 var toastTimer;
 function toast(m){ var t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2800); }
-function baseName(){ return "ДС" + (S.dsNum ? "_" + S.dsNum.replace(/[\\\/:*?"<>|\s]+/g, "_") : "") + "_" + (lastRes && lastRes.R ? fmtDate(lastRes.R) : ""); }
+function safeName(x){ return x.replace(/[\\\/:*?"<>|\s]+/g, "_"); }
+function baseName(){ return "ДС" + (S.dogNum ? "_" + safeName(S.dogNum) : "") + (S.dsNum ? "_" + S.dsNum.replace(/[\\\/:*?"<>|\s]+/g, "_") : "") + "_" + (lastRes && lastRes.R ? fmtDate(lastRes.R) : ""); }
 async function saveFile(name, data){
   if(window.claude && typeof window.claude.use === "function"){
     try{ var dl = await window.claude.use("downloads"); if(!dl){ toast("Скачивание недоступно в этом окне"); return; } await dl.save({filename:name, data:data}); toast("Файл сохранён: " + name); }
@@ -2086,7 +2100,7 @@ $("dBtnXlsx").addEventListener("click", function(){
   if(!okRes.length){ toast("Ни один вариант не рассчитан — исправьте условия"); return; }
   var wb = XLSX.utils.book_new();
   /* лист сравнения вариантов */
-  var cmp = [["Сравнение вариантов допсоглашения" + (S.dsNum ? " № " + S.dsNum : "")], [],
+  var cmp = [["Сравнение вариантов допсоглашения" + (S.dsNum ? " № " + S.dsNum : "") + (S.dogNum ? " · договор № " + S.dogNum : "")], [],
     ["Показатель"].concat(results.map(function(x, i){ return "Вариант " + (i+1); }))];
   var line = function(name, fn){ cmp.push([name].concat(results.map(function(x){ return x.r.errs.length ? "ошибка в условиях" : fn(x.r, x.v); }))); };
   line("Дата ДС", function(r, v){ return v.dsDate ? fmtDate(parseDate(v.dsDate)) : ""; });
@@ -2120,8 +2134,8 @@ $("dBtnXlsx").addEventListener("click", function(){
   results.forEach(function(x, i){
     if(x.r.errs.length) return;
     var r = x.r, v = x.v, g = grid(r);
-    var aoa = [["Вариант " + (i+1) + " — график погашения по допсоглашению"], [],
-      ["Дата ДС", v.dsDate ? fmtDate(parseDate(v.dsDate)) : ""], ["Начало нового графика", fmtDate(r.R)], ["ОД в новом графике, ₸", r.P], ["Ставка, % годовых", v.nRate],
+    var aoa = [["Вариант " + (i+1) + " — график погашения по допсоглашению" + (S.dogNum ? " · договор № " + S.dogNum : "")], [],
+      ["Дата ДС", v.dsDate ? fmtDate(parseDate(v.dsDate)) : ""].concat(S.dogNum ? [S.dogNum] : []), ["Начало нового графика", fmtDate(r.R)], ["ОД в новом графике, ₸", r.P], ["Ставка, % годовых", v.nRate],
       ["Гашение ОД", OD_NAME[v.odMode]], ["Гашение процентов", PR_NAME[v.prcMode]],
       ["Отложенные, ₸", r.pool], ["Первым платежом, ₸", r.first], ["Прощено, ₸", r.waived],
       ["ГЭСВ, %", r.gNew === null ? "—" : Math.round(r.gNew * 1e8) / 1e6], []];
