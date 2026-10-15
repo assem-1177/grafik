@@ -1851,7 +1851,7 @@ function ibsoOps(R, pen){
   if(tp === "cap") add("Просроченные % → капитализация в ОД", prcOver, false);
   if(tp === "waive") add("Просроченные % → прощение", prcOver, false);
   if(tc === "cap") add("Начисленные % → капитализация в ОД", prcCur, false);
-  if(tc === "waive") add("Начисленные % → прощение", prcCur, false);
+  /* прощение начисленных % в график не выводится (как и прощение пени) */
   if(S.tPen === "defer") add("Пеня → в отложенные", pen, false);
   return ops;
 }
@@ -1864,37 +1864,52 @@ function solveIRR(flows, D0, den){
   for(var q = 0; q < 200; q++){ var m = (lo + hi) / 2; if(g(m) > 0) lo = m; else hi = m; }
   return (lo + hi) / 2;
 }
+/* ГЭСВ строго как в ИБСО MOST (PR_CRED.MST_L_GET.Calc_Irr), по графику целиком (исполненная часть + новая):
+   ОД:  ВЫДАЧА_КРЕДИТА −, РЕСТР_ОДПР_ОД − (как доп. выдача), КАП_ПРОСРОЧ_КРЕДИТ −, ГАШЕНИЕ_КРЕД +  — суммируются по дате;
+   ПРЦ: ГАШЕНИЕ_ПРОЦ +, УЧЕТ_ОТЛОЖ_ПРОЦ + — НЕ суммируются: берётся последняя процентная операция на дату.
+   Не входят: ГАШ_ОТЛОЖ_ПРОЦ (отложенные и «первым платежом»), РЕСТР_ПРЦПР, «Отложка учтенных процентов», капитализация %, пени.
+   Исполненная часть — строки старого графика по дату начала нового графика включительно, ПЛАНОВЫМИ суммами и датами (см. ниже, какие остаются).
+   База всегда факт/360, t — дни от первой даты графика. Сверено: NA-850 → 45,1775 (ИБСО 45,177540); MKP-1314 → 69,5297. */
 function gesv(withNew, res){
   var D0 = parseDate(S.issue), R = startDate(); if(D0 === null || !(S.amount > 0)) return null;
-  var flows = [{d:D0, a:-S.amount}];
-  var paid = [];
-  if(withNew && S.facts && S.facts.length){
-    /* по факту: реальные платежи клиента по ОД и процентам до даты ДС (пени не входят) */
-    var Bd = balDate(); S.facts.forEach(function(o){ if(o.d <= Bd && (o.k === "odPay" || o.k === "odPayOver" || o.k === "prcPay" || o.k === "prcPayOver")) paid.push({d:o.d, a:o.a}); });
-  } else
-  S.rows.forEach(function(r){ var d = parseDate(r.date); if(d === null) return; if(!withNew || (R !== null && d <= R && paidOf(r, R))) paid.push({d:d, a:r.od + r.prc}); });
-  if(withNew && res){
-    /* просрочку вписали вручную больше, чем по графику: эти суммы клиент не платил —
-       убираем их из исполненных платежей (с последних дат), чтобы не посчитать дважды */
-    var diff = r2((bv("odOver") + bv("prcOver")) - (autoB.odOver + autoB.prcOver));
-    for(var i = paid.length - 1; i >= 0 && diff > 0; i--){ var cut = Math.min(paid[i].a, diff); paid[i].a = r2(paid[i].a - cut); diff = r2(diff - cut); }
-    if(diff < 0) paid.push({d:R, a:-diff});
-    /* новый график: только ОД и проценты; пеня в ГЭСВ не входит.
-       Отложенные % — как в ИБСО: датой их первоначального срока, а не датами гашения по новому графику
-       (проверено: 06.09 → 45,211525% при ИБСО 45,211530%) */
-    res.rows.forEach(function(r){ paid.push({d:r.date, a:r2(r.p + r.i)}); });
-    (res.extras || []).forEach(function(x){ if(x.ok && (x.od + x.prc) > 0) paid.push({d:x.d, a:r2(x.od + x.prc)}); });
-    if(S.tPrc === "defer" || S.tPrc === "first" || S.tPrc === "date"){
-      var due = (autoB.prcDue || []).map(function(x){ return {d:x.d, a:x.a}; }).sort(function(x, y){ return x.d - y.d; });
-      var tot = due.reduce(function(a, x){ return r2(a + x.a); }, 0), want = bv("prcOver") || 0;
-      for(var j = due.length - 1; j >= 0 && tot > want + 0.004; j--){ var c2 = Math.min(due[j].a, r2(tot - want)); due[j].a = r2(due[j].a - c2); tot = r2(tot - c2); }
-      if(want > tot + 0.004) due.push({d:R, a:r2(want - tot)});
-      due.forEach(function(x){ paid.push(x); });
-    }
-    if((S.tPrcCur || "defer") === "defer" && bv("prcCur") > 0) paid.push({d:R, a:bv("prcCur")});
+  var od = {}, prc = {}, keys = [];
+  var touch = function(d){ if(od[d] === undefined && prc[d] === undefined) keys.push(d); };
+  var addOd = function(d, a){ if(d === null || !a) return; touch(d); od[d] = r2((od[d] || 0) + a); };
+  var setPrc = function(d, a){ if(d === null || !(a > 0)) return; touch(d); prc[d] = a; };
+  addOd(D0, -S.amount);                                                     /* ВЫДАЧА_КРЕДИТА */
+  /* старый график: при допсоглашении — строки по дату начала нового графика.
+     Как в ИБСО после импорта (MKP-1314): неоплаченные и не вынесенные на просрочку строки удаляются;
+     остаются оплаченные, вынесенные (их компенсирует РЕСТР_ОДПР_ОД) и проценты, ушедшие в «Отложку учтенных процентов»
+     (в плане ИБСО это исполненная строка ГАШЕНИЕ_ПРОЦ на дату старого графика). Суммы — плановые. */
+  var old = [];
+  S.rows.forEach(function(r){ var d = parseDate(r.date); if(d === null) return; if(withNew && (R === null || d > R)) return; old.push({d:d, od:r.od, prc:r.prc}); });
+  old.sort(function(a, b){ return a.d - b.d; });
+  if(withNew && res && autoB.fromFacts && S.facts){
+    var Bd = balDate(), fs = function(k){ return S.facts.filter(function(o){ return o.k === k && o.d <= Bd; }).reduce(function(a, o){ return r2(a + o.a); }, 0); };
+    var accd = 0; (res.ops || []).forEach(function(o){ if(o.name === "Отложка учтенных процентов") accd = r2(accd + o.a); });
+    var cutBack = function(key, extra){ var u = r2(old.reduce(function(a, x){ return a + x[key]; }, 0) - extra);
+      for(var q = old.length - 1; q >= 0 && u > 0.004; q--){ var c = Math.min(old[q][key], u); old[q][key] = r2(old[q][key] - c); u = r2(u - c); } };
+    cutBack("od", r2(fs("odPay") + fs("odPayOver") + (autoB.odOver || 0)));
+    cutBack("prc", r2(fs("prcPay") + fs("prcPayOver") + (autoB.prcOver || 0) + accd));
   }
-  paid.forEach(function(x){ if(x.a) flows.push(x); });
-  return solveIRR(flows, D0, denOf(S.basis));
+  old.forEach(function(x){ addOd(x.d, x.od); setPrc(x.d, x.prc); });     /* ГАШЕНИЕ_КРЕД / ГАШЕНИЕ_ПРОЦ старого графика */
+  if(withNew && res){
+    (res.ops || []).forEach(function(o){
+      if(o.name === "Реструктуризация просрочки ОД в Срочный ОД") addOd(o.d, -o.a);   /* РЕСТР_ОДПР_ОД */
+      if(o.name === "Учет отложенных ПРЦ") setPrc(o.d, o.a);                          /* УЧЕТ_ОТЛОЖ_ПРОЦ */
+    });
+    /* новый график и доп. платежи — по датам: ОД складывается, проценты — последняя операция на дату */
+    var nw = res.rows.map(function(r){ return {d:r.date, od:r.p, prc:r.i}; });
+    (res.extras || []).forEach(function(x){ if(x.ok) nw.push({d:x.d, od:x.od, prc:x.prc}); });
+    nw.sort(function(a, b){ return a.d - b.d; }).forEach(function(x){ addOd(x.d, x.od); setPrc(x.d, x.prc); });
+  }
+  keys.sort(function(a, b){ return a - b; });
+  var d0 = keys[0], put = null;
+  for(var k = 0; k < keys.length; k++) if((od[keys[k]] || 0) < 0){ put = keys[k]; break; }
+  if(put === null) return null;
+  var K = -od[put], flows = [{d:d0, a:-K}];
+  keys.forEach(function(d){ if(d === put) return; var f = r2((od[d] || 0) + (prc[d] || 0)); if(f) flows.push({d:d, a:f}); });
+  return solveIRR(flows, d0, 360);
 }
 
 /* ================= отрисовка ================= */
